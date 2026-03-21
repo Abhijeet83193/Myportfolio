@@ -1,13 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Briefcase, 
-  Code2, 
-  History, 
-  FileText, 
-  GraduationCap, 
-  Mail, 
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Briefcase,
+  Code2,
+  History,
+  FileText,
+  GraduationCap,
+  Mail,
   ExternalLink,
   Github,
   Twitter,
@@ -15,108 +15,298 @@ import {
   Instagram,
   Globe
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-// Pages
-const Dashboard = () => (
-  <motion.div 
-    initial={{ opacity: 0 }} 
-    animate={{ opacity: 1 }} 
-    className="home-view"
-  >
-    {/* Hero Section */}
-    <section className="hero-section" style={{ gridTemplateColumns: '1fr', textAlign: 'center' }}>
-      <motion.div 
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        className="hero-content"
-        style={{ alignItems: 'center' }}
-      >
-        <h1 className="hero-title">
-          Abhijeet Dhokne
-        </h1>
-        <p className="hero-description">
-          Building and breaking things.
-        </p>
-        
-        <div className="social-links">
-          <a href="#" className="social-icon-box"><Github size={20} /></a>
-          <a href="#" className="social-icon-box"><Linkedin size={20} /></a>
-          <a href="#" className="social-icon-box"><Globe size={20} /></a>
-          <a href="#" className="social-icon-box"><Twitter size={20} /></a>
-          <a href="#" className="social-icon-box"><Instagram size={20} /></a>
-        </div>
+// --- Generic Section Wrapper ---
+const Section = ({ id, children, title }) => {
+  return (
+    <motion.section
+      id={id}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false, amount: 0.1 }}
+      className="view-section"
+      style={{
+        minHeight: id === 'home' ? 'auto' : '65vh',
+        padding: id === 'home' ? '0' : '60px 0'
+      }}
+    >
+      {title && <h2 className="section-title">{title}</h2>}
+      {children}
+    </motion.section>
+  );
+};
 
-        <div className="hero-actions-group">
-          <button className="btn-primary">
-            See my resume
-          </button>
-        </div>
+const Quote = () => (
+  <div className="quote-container two-col-layout" style={{ minHeight: 'calc(100vh - 100px)', padding: '0 5%' }}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2 }}
+      className="image-side"
+    >
+      <img src="/images/warrior.jpg" alt="Warrior Illustration" className="section-illustration" style={{ maxWidth: '650px' }} />
+    </motion.div>
+
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1 }}
+      className="content-side"
+      style={{ textAlign: 'center' }}
+    >
+      <h2 className="quote-text">बलिदान परम धर्म</h2>
+      <p className="quote-author" style={{ color: '#8B4513' }}>"Sacrifice is supreme religion"</p>
+    </motion.div>
+  </div>
+);
+
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
+const Intro = () => (
+  <div className="two-col-layout">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.3 }}
+      className="content-side"
+    >
+      <motion.h1 variants={textVariants} className="hero-title">Abhijeet Dhokne</motion.h1>
+      <motion.h3 variants={textVariants} style={{ fontSize: '1.8rem', color: '#8B4513', fontWeight: '600', marginBottom: '0.5rem' }}>
+        ( Mentos Zindagi )
+      </motion.h3>
+      <motion.p variants={textVariants} className="hero-description" style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--army-olive)', marginBottom: '1.5rem' }}>
+        Building and breaking things.
+      </motion.p>
+      <motion.div variants={textVariants} className="social-links" style={{ marginBottom: '2rem' }}>
+        <a href="#" className="social-icon-box"><Github size={20} /></a>
+        <a href="#" className="social-icon-box"><Linkedin size={20} /></a>
+        <a href="#" className="social-icon-box"><Globe size={20} /></a>
+        <a href="#" className="social-icon-box"><Twitter size={20} /></a>
+        <a href="#" className="social-icon-box"><Instagram size={20} /></a>
       </motion.div>
-    </section>
-
-    {/* Section 2: Features/Stats */}
-    <div className="features-grid">
-      <div className="feature-card">
-        <div className="feature-icon"><Code2 size={40} /></div>
-        <h3>Full Stack</h3>
-        <p>Developing end-to-end solutions with modern tech stacks.</p>
-      </div>
-      <div className="feature-card">
-        <div className="feature-icon"><Briefcase size={40} /></div>
-        <h3>3+ Years</h3>
-        <p>Experience in building scalable web applications.</p>
-      </div>
-      <div className="feature-card">
-        <div className="feature-icon"><History size={40} /></div>
-        <h3>Active</h3>
-        <p>Always learning and exploring new technologies.</p>
-      </div>
-    </div>
-  </motion.div>
+      <motion.button variants={textVariants} className="btn-primary" style={{ padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem' }}>See my resume</motion.button>
+    </motion.div>
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+      className="image-side"
+    >
+      <img src="/images/intro_dev.png" alt="Developer Illustration" className="section-illustration" />
+    </motion.div>
+  </div>
 );
 
-const PlaceholderPage = ({ title }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }} 
-    animate={{ opacity: 1, y: 0 }} 
-    className="glass-card"
-    style={{ padding: '8rem', textAlign: 'center' }}
-  >
-    <h2 style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '1rem' }}>{title}</h2>
+const WhatIDo = () => (
+  <div className="two-col-layout reverse">
+    <motion.div 
+      initial={{ opacity: 0, x: -50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1 }}
+      className="image-side"
+    >
+      <img src="/images/architecture.png" alt="Architecture Illustration" className="section-illustration" />
+    </motion.div>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.3 }}
+      className="content-side"
+    >
+      <motion.h2 variants={textVariants} className="section-sub-title">System Architecture</motion.h2>
+      <div className="skill-bullets">
+        <motion.div variants={textVariants} className="skill-item">
+          <div className="skill-dot"></div>
+          <div>
+            <strong>Microservices Architecture:</strong>
+            <p>Designed and implemented microservices for large-scale applications.</p>
+          </div>
+        </motion.div>
+        <motion.div variants={textVariants} className="skill-item">
+          <div className="skill-dot"></div>
+          <div>
+            <strong>Scalability & Performance:</strong>
+            <p>Optimizing system performance and scalability including load balancing and caching.</p>
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  </div>
+);
+
+const ModernDev = () => (
+  <div className="two-col-layout">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.3 }}
+      className="content-side"
+    >
+      <motion.h2 variants={textVariants} className="section-sub-title">Modern Web Development</motion.h2>
+      <div className="skill-bullets">
+        <motion.div variants={textVariants} className="skill-item">
+          <div className="skill-dot"></div>
+          <div>
+            <strong>Interactive UI/UX:</strong>
+            <p>Creating dynamic, high-performance user interfaces with React and Framer Motion.</p>
+          </div>
+        </motion.div>
+        <motion.div variants={textVariants} className="skill-item">
+          <div className="skill-dot"></div>
+          <div>
+            <strong>State Management:</strong>
+            <p>Efficiently managing application state for complex workflows and data-heavy apps.</p>
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+    <motion.div 
+      initial={{ opacity: 0, x: 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1 }}
+      className="image-side"
+    >
+      <img src="/images/web_dev.jpg" alt="Modern Web Dev Illustration" className="section-illustration" />
+    </motion.div>
+  </div>
+);
+
+const Features = () => (
+  <div className="features-grid">
+    <motion.div whileHover={{ y: -10 }} className="feature-card">
+      <div className="feature-icon"><Code2 size={40} /></div>
+      <h3>Full Stack</h3>
+      <p>Developing end-to-end solutions with modern tech stacks.</p>
+    </motion.div>
+    <motion.div whileHover={{ y: -10 }} className="feature-card">
+      <div className="feature-icon"><Briefcase size={40} /></div>
+      <h3>3+ Years</h3>
+      <p>Experience in building scalable web applications.</p>
+    </motion.div>
+    <motion.div whileHover={{ y: -10 }} className="feature-card">
+      <div className="feature-icon"><History size={40} /></div>
+      <h3>Active</h3>
+      <p>Always learning and exploring new technologies.</p>
+    </motion.div>
+  </div>
+);
+
+const PlaceholderContent = ({ title }) => (
+  <div style={{ padding: '4rem', textAlign: 'center', width: '100%', background: 'rgba(0,0,0,0.02)', borderRadius: '20px' }}>
     <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>Our {title} section is getting a creative makeover.</p>
-  </motion.div>
+  </div>
 );
+
+const MainLanding = () => {
+  return (
+    <div className="home-view">
+      <Section id="home"><Quote /></Section>
+      <Section id="intro"><Intro /></Section>
+      <Section id="what-i-do" title="What I Do"><WhatIDo /></Section>
+      <Section id="development"><ModernDev /></Section>
+      <Section id="features"><Features /></Section>
+      <Section id="education" title="Education"><PlaceholderContent title="Education" /></Section>
+      <Section id="experience" title="Experience"><PlaceholderContent title="Experience" /></Section>
+      <Section id="projects" title="Projects"><PlaceholderContent title="Projects" /></Section>
+      <Section id="open-source" title="Open Source"><PlaceholderContent title="Open Source" /></Section>
+      <Section id="blog" title="Blog"><PlaceholderContent title="Blog" /></Section>
+      <Section id="contact" title="Contact Me"><PlaceholderContent title="Contact Me" /></Section>
+    </div>
+  );
+};
 
 const Header = () => {
-  const location = useLocation();
+  const [activePath, setActivePath] = useState(window.location.pathname);
+  const isScrollingByNav = useRef(false);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll('section');
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0px -40% 0px',
+      threshold: 0
+    };
+
+    const handleIntersect = (entries) => {
+      if (isScrollingByNav.current) return;
+      
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          const path = id === 'home' ? '/' : `/${id}`;
+          if (window.location.pathname !== path) {
+            window.history.replaceState(null, '', path);
+            setActivePath(path);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    sections.forEach(s => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Education', path: '/education' },
-    { label: 'Experience', path: '/experience' },
-    { label: 'Projects', path: '/projects' },
-    { label: 'Open Source', path: '/open-source' },
-    { label: 'Blog', path: '/blog' },
-    { label: 'Contact Me', path: '/contact' }
+    { label: 'Home', path: '/', targetId: 'home' },
+    { label: 'Education', path: '/education', targetId: 'education' },
+    { label: 'Experience', path: '/experience', targetId: 'experience' },
+    { label: 'Projects', path: '/projects', targetId: 'projects' },
+    { label: 'Open Source', path: '/open-source', targetId: 'open-source' },
+    { label: 'Blog', path: '/blog', targetId: 'blog' },
+    { label: 'Contact Me', path: '/contact', targetId: 'contact' }
   ];
+
+  const handleNavClick = (e, item) => {
+    e.preventDefault();
+    isScrollingByNav.current = true;
+    const element = document.getElementById(item.targetId);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 80,
+        behavior: 'smooth'
+      });
+      window.history.pushState(null, '', item.path);
+      setActivePath(item.path);
+    }
+    setTimeout(() => { isScrollingByNav.current = false; }, 1000);
+  };
 
   return (
     <header className="header">
       <div className="header-content">
-        <div className="header-title">
+        <div className="header-title" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <h1>Abhijeet Dhokne</h1>
         </div>
         <nav className="header-actions">
           <div className="action-buttons">
             {navItems.map((item) => (
-              <NavLink 
-                key={item.path} 
-                to={item.path} 
-                className={({ isActive }) => isActive ? "nav-link-custom active" : "nav-link-custom"}
+              <a
+                key={item.path}
+                href={item.path}
+                onClick={(e) => handleNavClick(e, item)}
+                className={activePath === item.path ? "nav-link-custom active" : "nav-link-custom"}
               >
                 {item.label}
-              </NavLink>
+              </a>
             ))}
           </div>
         </nav>
@@ -131,17 +321,9 @@ function App() {
       <div className="app-container">
         <Header />
         <main className="main-content">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Dashboard key="dashboard" />} />
-              <Route path="/education" element={<PlaceholderPage key="edu" title="Education" />} />
-              <Route path="/experience" element={<PlaceholderPage key="exp" title="Experience" />} />
-              <Route path="/projects" element={<PlaceholderPage key="projects" title="Projects" />} />
-              <Route path="/open-source" element={<PlaceholderPage key="os" title="Open Source" />} />
-              <Route path="/blog" element={<PlaceholderPage key="blog" title="Blog" />} />
-              <Route path="/contact" element={<PlaceholderPage key="contact" title="Contact Me" />} />
-            </Routes>
-          </AnimatePresence>
+          <Routes>
+            <Route path="*" element={<MainLanding />} />
+          </Routes>
         </main>
       </div>
     </Router>
