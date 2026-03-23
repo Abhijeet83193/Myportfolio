@@ -25,7 +25,7 @@ const Section = ({ id, children, title }) => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      viewport={{ once: false, amount: 0.1 }}
+      viewport={{ once: true, amount: 0.1 }}
       className="view-section"
       style={{
         minHeight: id === 'home' ? 'auto' : '65vh',
@@ -43,6 +43,7 @@ const Quote = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1.2 }}
       className="image-side"
     >
@@ -52,6 +53,7 @@ const Quote = () => (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
       whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="content-side"
       style={{ textAlign: 'center' }}
@@ -83,41 +85,52 @@ const Intro = () => (
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.3 }}
       className="content-side"
     >
       <motion.h1 variants={textVariants} className="hero-title">Abhijeet Dhokne</motion.h1>
-      <motion.h3 variants={textVariants} style={{ fontSize: '1.8rem', color: '#8B4513', fontWeight: '600', marginBottom: '0.5rem' }}>
-        ( Mentos Zindagi )
+
+      <motion.h3 variants={textVariants} style={{ fontSize: '1.4rem', color: 'var(--primary)', fontWeight: '600', marginBottom: '1.2rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '0.8rem' }}>
+        Full Stack Web Developer
       </motion.h3>
-      <motion.p variants={textVariants} className="hero-description" style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--army-olive)', marginBottom: '1.5rem' }}>
-        Building and breaking things.
+
+      <motion.p variants={textVariants} className="hero-description" style={{ fontSize: '1.15rem', lineHeight: '1.7', color: 'var(--text-main)', marginBottom: '1.2rem', maxWidth: '600px' }}>
+        I am a Computer Science student and a passionate developer focused on building efficient, scalable systems and engaging digital experiences.
       </motion.p>
-      <motion.div variants={textVariants} className="social-links" style={{ marginBottom: '2rem' }}>
+
+      <motion.p variants={textVariants} style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-muted)', maxWidth: '600px' }}>
+        My expertise lies in modern web architectures—particularly <strong>React</strong>, <strong>Node.js</strong>, and <strong>MongoDB</strong>.
+        I love transforming creative ideas into optimized real-world applications while continuously sharpening my problem-solving skills through Data Structures and Algorithms.
+      </motion.p>
+
+      <div variants={textVariants} className="social-links" style={{ marginBottom: '2rem', marginTop: '2rem' }}>
         <a href="#" className="social-icon-box"><Github size={20} /></a>
         <a href="#" className="social-icon-box"><Linkedin size={20} /></a>
         <a href="#" className="social-icon-box"><Globe size={20} /></a>
         <a href="#" className="social-icon-box"><Twitter size={20} /></a>
         <a href="#" className="social-icon-box"><Instagram size={20} /></a>
-      </motion.div>
-      <motion.button variants={textVariants} className="btn-primary" style={{ padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem' }}>See my resume</motion.button>
+      </div>
+
+      <button variants={textVariants} className="btn-primary" style={{ padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem' }}>See my resume</button>
     </motion.div>
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="image-side"
     >
-      <img src="/images/intro_dev.png" alt="Developer Illustration" className="section-illustration" />
+      <img src="/images/original-d2eee8c45af2c47792e18fc174bbdd5f.png" alt="Developer Illustration" className="section-illustration" style={{ mixBlendMode: 'multiply' }} />
     </motion.div>
   </div>
 );
 
 const WhatIDo = () => (
   <div className="two-col-layout reverse">
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="image-side"
     >
@@ -127,7 +140,7 @@ const WhatIDo = () => (
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.3 }}
       className="content-side"
     >
       <motion.h2 variants={textVariants} className="section-sub-title">System Architecture</motion.h2>
@@ -157,7 +170,7 @@ const ModernDev = () => (
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.3 }}
       className="content-side"
     >
       <motion.h2 variants={textVariants} className="section-sub-title">Modern Web Development</motion.h2>
@@ -178,9 +191,10 @@ const ModernDev = () => (
         </motion.div>
       </div>
     </motion.div>
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, x: 50 }}
       whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="image-side"
     >
@@ -247,7 +261,7 @@ const Header = () => {
 
     const handleIntersect = (entries) => {
       if (isScrollingByNav.current) return;
-      
+
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
