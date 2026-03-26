@@ -10,12 +10,23 @@ import {
   Mail,
   ExternalLink,
   Github,
-  Twitter,
   Linkedin,
-  Instagram,
-  Globe
+  Instagram
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+// --- Custom X Icon ---
+const XIcon = ({ size = 20, color = "currentColor" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill={color}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+  </svg>
+);
 
 // --- Generic Section Wrapper ---
 const Section = ({ id, children, title }) => {
@@ -104,14 +115,22 @@ const Intro = () => (
       </motion.p>
 
       <div variants={textVariants} className="social-links" style={{ marginBottom: '2rem', marginTop: '2rem' }}>
-        <a href="#" className="social-icon-box"><Github size={20} /></a>
-        <a href="#" className="social-icon-box"><Linkedin size={20} /></a>
-        <a href="#" className="social-icon-box"><Globe size={20} /></a>
-        <a href="#" className="social-icon-box"><Twitter size={20} /></a>
-        <a href="#" className="social-icon-box"><Instagram size={20} /></a>
+        <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
+        <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
+        <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
+        <a href="https://www.instagram.com/abhi.xiv.hz/" className="social-icon-box instagram"><Instagram size={20} /></a>
       </div>
 
-      <button variants={textVariants} className="btn-primary" style={{ padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem' }}>See my resume</button>
+      <a
+        variants={textVariants}
+        href="/resume/resume_1.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary"
+        style={{ display: 'inline-block', padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem', textDecoration: 'none' }}
+      >
+        See my resume
+      </a>
     </motion.div>
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}

@@ -335,7 +335,18 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
+.social-icon-box:hover {
+  transform: translateY(-3px);
+  opacity: 0.9;
+}
+
+.social-icon-box.github { background: #24292e; }
+.social-icon-box.linkedin { background: #0a66c2; }
+.social-icon-box.x-icon { background: #000000; }
+.social-icon-box.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
 .btn-primary {
   background: var(--primary);
