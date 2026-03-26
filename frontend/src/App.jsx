@@ -144,44 +144,105 @@ const Intro = () => (
   </div>
 );
 
-const WhatIDo = () => (
-  <div className="two-col-layout reverse">
-    <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 1 }}
-      className="image-side"
-    >
-      <img src="/images/architecture.png" alt="Architecture Illustration" className="section-illustration" />
-    </motion.div>
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      className="content-side"
-    >
-      <motion.h2 variants={textVariants} className="section-sub-title">System Architecture</motion.h2>
-      <div className="skill-bullets">
-        <motion.div variants={textVariants} className="skill-item">
-          <div className="skill-dot"></div>
-          <div>
-            <strong>Microservices Architecture:</strong>
-            <p>Designed and implemented microservices for large-scale applications.</p>
-          </div>
-        </motion.div>
-        <motion.div variants={textVariants} className="skill-item">
-          <div className="skill-dot"></div>
-          <div>
-            <strong>Scalability & Performance:</strong>
-            <p>Optimizing system performance and scalability including load balancing and caching.</p>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-  </div>
-);
+const WhatIDo = () => {
+  const items = [
+    {
+      title: "Building Full-Stack Web Applications",
+      icon: "🌐",
+      description: "Creating scalable and modern web applications from frontend to backend.",
+      image: "/images/fullstack_illustration.png",
+      reverse: false
+    },
+    {
+      title: "Crafting Modern User Interfaces",
+      icon: "🎨",
+      description: "Designing clean, responsive, and user-friendly interfaces for better user experience.",
+      image: "/images/uiux_illustration.png",
+      reverse: true
+    },
+    {
+      title: "Developing Scalable Backend Systems",
+      icon: "⚙️",
+      description: "Building secure APIs and backend services that power web applications.",
+      image: "/images/backend_illustration.png",
+      reverse: false
+    }
+  ];
+
+  return (
+    <div className="what-i-do-container" style={{ display: 'flex', flexDirection: 'column', gap: '6rem' }}>
+      {items.map((item, index) => (
+        <div key={index} className={`two-col-layout ${item.reverse ? 'reverse' : ''}`} style={{ minHeight: 'auto', padding: '0' }}>
+          {item.reverse ? (
+            <>
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 1 }}
+                className="image-side"
+              >
+                {/* User will provide illustration. Adding a placeholder view for now. */}
+                <div style={{ position: 'relative', width: '100%', paddingBottom: '75%', borderRadius: '12px', background: 'rgba(0,0,0,0.03)', overflow: 'hidden' }}>
+                    <img src={item.image} alt={item.title} className="section-illustration" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'none', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.2rem', padding: '2rem', textAlign: 'center', border: '2px dashed #ccc', borderRadius: '12px' }}>
+                        Illustration will be placed here<br />({item.image})
+                    </div>
+                </div>
+              </motion.div>
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                className="content-side"
+              >
+                <motion.h2 variants={textVariants} className="section-sub-title" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '2.5rem' }}>{item.icon}</span> {item.title}
+                </motion.h2>
+                <motion.p variants={textVariants} style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)' }}>
+                  {item.description}
+                </motion.p>
+              </motion.div>
+            </>
+          ) : (
+            <>
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                className="content-side"
+              >
+                <motion.h2 variants={textVariants} className="section-sub-title" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '2.5rem' }}>{item.icon}</span> {item.title}
+                </motion.h2>
+                <motion.p variants={textVariants} style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)' }}>
+                  {item.description}
+                </motion.p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 1 }}
+                className="image-side"
+              >
+                {/* User will provide illustration. Adding a placeholder view for now. */}
+                <div style={{ position: 'relative', width: '100%', paddingBottom: '75%', borderRadius: '12px', background: 'rgba(0,0,0,0.03)', overflow: 'hidden' }}>
+                    <img src={item.image} alt={item.title} className="section-illustration" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'none', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.2rem', padding: '2rem', textAlign: 'center', border: '2px dashed #ccc', borderRadius: '12px' }}>
+                        Illustration will be placed here<br />({item.image})
+                    </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const ModernDev = () => (
   <div className="two-col-layout">
