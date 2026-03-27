@@ -50,28 +50,160 @@ const Section = ({ id, children, title }) => {
   );
 };
 
-const Quote = () => (
-  <div className="quote-container two-col-layout" style={{ minHeight: 'calc(100vh - 100px)', padding: '0 5%' }}>
+const Terminal = () => {
+  const [commits, setCommits] = useState([
+    { id: 1, message: 'git commit -m "Initial setup"', time: '2 mins ago', type: 'commit' },
+    { id: 2, message: 'git push origin main', time: '5 mins ago', type: 'push' },
+    { id: 3, message: 'feat: add authentication middleware', time: '1 hour ago', type: 'commit' },
+    { id: 4, message: 'fix: resolve API response timeout', time: '3 hours ago', type: 'commit' },
+    { id: 5, message: 'Working on Myportfolio project...', time: 'Now', type: 'active' },
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCommits(prev => {
+        const updated = [...prev];
+        updated.forEach(commit => {
+          if (commit.time.includes('mins')) {
+            const mins = parseInt(commit.time) + 1;
+            commit.time = `${mins} mins ago`;
+          }
+        });
+        return updated;
+      });
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 1.2 }}
-      className="image-side"
+      transition={{ duration: 1 }}
+      className="terminal-window"
+      style={{
+        background: '#1e1e1e',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+        maxWidth: '900px',
+        width: '100%',
+        fontFamily: 'Monaco, Consolas, "Courier New", monospace'
+      }}
     >
-      <img src="/images/warrior.jpg" alt="Warrior Illustration" className="section-illustration" style={{ maxWidth: '650px' }} />
+      <div className="terminal-header" style={{
+        background: 'linear-gradient(180deg, #323232 0%, #1e1e1e 100%)',
+        padding: '12px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        borderBottom: '1px solid #333'
+      }}>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }}></div>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }}></div>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }}></div>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ color: '#27c93f', fontSize: '8px' }}>●</span>
+          <span style={{ color: '#888', fontSize: '12px' }}>Last seen: Just now</span>
+        </div>
+      </div>
+      <div className="terminal-body" style={{
+        padding: '20px',
+        minHeight: '250px',
+        maxHeight: '300px',
+        overflowY: 'auto'
+      }}>
+        <div style={{ color: '#27c93f', marginBottom: '16px', fontSize: '14px' }}>
+          <span style={{ color: '#5af78e' }}>➜</span>
+          <span style={{ color: '#5af78e', marginLeft: '8px' }}>~</span>
+          <span style={{ color: '#fff', marginLeft: '8px' }}>git log --oneline --graph --all</span>
+        </div>
+        {commits.map((commit, index) => (
+          <motion.div
+            key={commit.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px',
+              marginBottom: '12px',
+              fontSize: '13px',
+              lineHeight: '1.5'
+            }}
+          >
+            <span style={{
+              color: commit.type === 'active' ? '#ff5f56' : '#5af78e',
+              fontWeight: commit.type === 'active' ? 'bold' : 'normal'
+            }}>
+              {commit.type === 'active' ? '●' : '○'}
+            </span>
+            <div style={{ flex: 1 }}>
+              <span style={{ color: '#c6c6c6' }}>{commit.message}</span>
+              <span style={{ color: '#6a6a6a', marginLeft: '12px', fontSize: '11px' }}>
+                {commit.time}
+              </span>
+            </div>
+          </motion.div>
+        ))}
+        <motion.div
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1, repeat: Infinity }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '20px',
+            color: '#5af78e',
+            fontSize: '14px'
+          }}
+        >
+          <span style={{ color: '#5af78e' }}>➜</span>
+          <span style={{ color: '#5af78e' }}>~</span>
+          <span style={{ width: '8px', height: '18px', background: '#5af78e' }}></span>
+        </motion.div>
+      </div>
     </motion.div>
+  );
+};
+
+const Quote = () => (
+  <div className="quote-container" style={{ minHeight: 'calc(100vh - 100px)', padding: '60px 5%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', width: '100%' }}>
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 1 }}
+        style={{ width: '250px', height: '250px' }}>
+        <DotLottieReact
+          src="https://lottie.host/39d6c4e7-3644-4c21-a229-39dcf70032ae/gAZ9iS1rgE.lottie"
+          loop
+          autoplay
+          style={{ width: '100%', height: '100%' }}
+        />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+        style={{ fontSize: '1.8rem', color: 'var(--primary)', fontWeight: '600' }}>
+         <i>Hey, I am Terminal &nbsp; Abhi is coding...</i>
+      </motion.div>
+    </div>
 
     <motion.div
-      initial={{ opacity: 0, x: 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 1 }}
-      className="content-side"
-      style={{ textAlign: 'center' }}
+      transition={{ duration: 1, delay: 0.3 }}
+      style={{ width: '100%', maxWidth: '1400px', display: 'flex', justifyContent: 'center' }}
     >
-      <h2 className="quote-text">बलिदान परम धर्म</h2>
-      <p className="quote-author" style={{ color: '#8B4513' }}>"Sacrifice is supreme religion"</p>
+      <Terminal />
     </motion.div>
   </div>
 );
