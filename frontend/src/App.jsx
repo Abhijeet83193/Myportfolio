@@ -14,6 +14,7 @@ import {
   Instagram
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 // --- Custom X Icon ---
 const XIcon = ({ size = 20, color = "currentColor" }) => (
@@ -150,22 +151,25 @@ const WhatIDo = () => {
       title: "Building Full-Stack Web Applications",
       icon: "🌐",
       description: "Creating scalable and modern web applications from frontend to backend. I specialize in building complete solutions using React for dynamic frontends and Node.js with MongoDB for robust backend systems. From conceptualization to deployment, I ensure seamless integration across all layers of the application stack.",
-      image: "/images/fullstack_illustration.png",
-      reverse: true
+      image: "/images/fullstack_illustration.jpg",
+      reverse: true,
+      type: "image"
     },
     {
       title: "Crafting Modern User Interfaces",
       icon: "🎨",
       description: "Designing clean, responsive, and user-friendly interfaces for better user experience. I leverage modern frameworks like React combined with Framer Motion to create engaging, animated experiences. Every interface is meticulously crafted with accessibility and performance in mind, ensuring users enjoy smooth interactions across all devices.",
-      image: "/images/uiux_illustration.png",
-      reverse: false
+      image: "/images/backend_illustration.jpg",
+      reverse: false,
+      type: "image"
     },
     {
       title: "Developing Scalable Backend Systems",
       icon: "⚙️",
       description: "Building secure APIs and backend services that power web applications. I design RESTful APIs, implement proper authentication & authorization, and optimize database queries for performance. My focus is on creating maintainable, scalable architectures that can handle growing user bases and complex business logic.",
-      image: "/images/backend_illustration.png",
-      reverse: true
+      image: "https://lottie.host/f8c0c124-34c7-4040-b09b-5757f953d9fc/29YuJKcSoq.lottie",
+      reverse: true,
+      type: "lottie"
     }
   ];
 
@@ -194,13 +198,18 @@ const WhatIDo = () => {
             transition={{ duration: 1 }}
             className="image-side"
           >
-            {/* User will provide illustration. Adding a placeholder view for now. */}
-            <div style={{ position: 'relative', width: '100%', paddingBottom: '75%', borderRadius: '12px', background: 'rgba(0,0,0,0.03)', overflow: 'hidden' }}>
-                <img src={item.image} alt={item.title} className="section-illustration" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'none', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.2rem', padding: '2rem', textAlign: 'center', border: '2px dashed #ccc', borderRadius: '12px' }}>
-                    Illustration will be placed here<br />({item.image})
-                </div>
-            </div>
+            {item.type === "lottie" ? (
+              <div style={{ width: '100%', maxWidth: '650px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <DotLottieReact
+                  src={item.image}
+                  loop
+                  autoplay
+                  style={{ width: '100%', height: 'auto', maxWidth: '650px' }}
+                />
+              </div>
+            ) : (
+              <img src={item.image} alt={item.title} className="section-illustration" style={{ maxWidth: '650px' }} />
+            )}
           </motion.div>
         </div>
       ))}
