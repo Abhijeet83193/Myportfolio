@@ -192,7 +192,9 @@ const Quote = () => (
         viewport={{ once: true }}
         transition={{ delay: 0.3, duration: 0.6 }}
         style={{ fontSize: '1.8rem', color: 'var(--primary)', fontWeight: '600' }}>
-         <i>Hey, I am Terminal &nbsp; Abhi is coding...</i>
+        <span className="glitch-text" data-text="Hey, I'm GOJO, injecting code...">
+          <i>Hey,I'm GOJO. injecting code..</i>
+        </span>
       </motion.div>
     </div>
 
