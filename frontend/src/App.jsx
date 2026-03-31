@@ -50,30 +50,132 @@ const Section = ({ id, children, title }) => {
   );
 };
 
+const GITHUB_USERNAME = 'Abhijeet83193';
+
 const Terminal = () => {
-  const [commits, setCommits] = useState([
-    { id: 1, message: 'git commit -m "Initial setup"', time: '2 mins ago', type: 'commit' },
-    { id: 2, message: 'git push origin main', time: '5 mins ago', type: 'push' },
-    { id: 3, message: 'feat: add authentication middleware', time: '1 hour ago', type: 'commit' },
-    { id: 4, message: 'fix: resolve API response timeout', time: '3 hours ago', type: 'commit' },
-    { id: 5, message: 'Working on Myportfolio project...', time: 'Now', type: 'active' },
-  ]);
+  const [commits, setCommits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchCommits = async () => {
+    try {
+      const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      // Using GraphQL API to fetch recent commits across all repositories
+      const query = `{
+        viewer {
+          repositories(first: 10, orderBy: {field: UPDATED_AT, direction: DESC}) {
+            nodes {
+              name
+              url
+              defaultBranchRef {
+                target {
+                  ... on Commit {
+                    history(first: 5) {
+                      nodes {
+                        oid
+                        message
+                        author {
+                          name
+                          avatarUrl
+                        }
+                        committedDate
+                        url
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`;
+
+      const response = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('GraphQL result:', result);
+
+      if (result.errors) {
+        console.error('GraphQL errors:', result.errors);
+        throw new Error('GraphQL error');
+      }
+
+      const repos = result.data?.viewer?.repositories?.nodes || [];
+      const allCommits = [];
+
+      repos.forEach(repo => {
+        const commits = repo.defaultBranchRef?.target?.history?.nodes || [];
+        commits.forEach((commit, idx) => {
+          allCommits.push({
+            id: `${repo.name}-${commit.oid}`,
+            sha: commit.oid.substring(0, 7),
+            message: commit.message.split('\n')[0],
+            author: commit.author?.name || 'Unknown',
+            date: new Date(commit.committedDate),
+            url: commit.url,
+            repo: repo.name,
+            type: allCommits.length === 0 ? 'active' : 'commit',
+          });
+        });
+      });
+
+      // Sort by date, oldest first (newest at bottom with cursor)
+      allCommits.sort((a, b) => a.date - b.date);
+      // Mark newest (last) as active
+      if (allCommits.length > 0) {
+        allCommits[allCommits.length - 1].type = 'active';
+        // Reset others to 'commit'
+        allCommits.forEach((c, i) => {
+          if (i !== allCommits.length - 1) c.type = 'commit';
+        });
+      }
+      const latestCommits = allCommits;
+
+      setCommits(latestCommits);
+      setLoading(false);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching commits:', err);
+      setError('Unable to load commits');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCommits(prev => {
-        const updated = [...prev];
-        updated.forEach(commit => {
-          if (commit.time.includes('mins')) {
-            const mins = parseInt(commit.time) + 1;
-            commit.time = `${mins} mins ago`;
-          }
-        });
-        return updated;
-      });
-    }, 60000);
+    fetchCommits();
+    // Refresh every 2 minutes
+    const interval = setInterval(fetchCommits, 120000);
     return () => clearInterval(interval);
   }, []);
+
+  const getTimeAgo = (date) => {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  };
 
   return (
     <motion.div
@@ -105,26 +207,59 @@ const Terminal = () => {
         <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }}></div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ color: '#27c93f', fontSize: '8px' }}>●</span>
-          <span style={{ color: '#888', fontSize: '12px' }}>Last seen: Just now</span>
+          <span style={{ color: '#888', fontSize: '12px' }}>
+            {commits.length > 0 ? `Last seen: ${getTimeAgo(commits[commits.length - 1].date)}` : 'No commits'}
+          </span>
         </div>
       </div>
       <div className="terminal-body" style={{
         padding: '20px',
         minHeight: '250px',
         maxHeight: '300px',
-        overflowY: 'auto'
-      }}>
+        overflowY: 'auto',
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#4a4a4a #1e1e1e'
+      }}
+      css={`{
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #1e1e1e;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #4a4a4a;
+          border-radius: 3px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: #5a5a5a;
+        }
+      }`}
+      >
         <div style={{ color: '#27c93f', marginBottom: '16px', fontSize: '14px' }}>
           <span style={{ color: '#5af78e' }}>➜</span>
           <span style={{ color: '#5af78e', marginLeft: '8px' }}>~</span>
           <span style={{ color: '#fff', marginLeft: '8px' }}>git log --oneline --graph --all</span>
         </div>
-        {commits.map((commit, index) => (
+
+        {loading && (
+          <div style={{ color: '#6a6a6a', fontSize: '13px', textAlign: 'center', padding: '40px 0' }}>
+            Loading commits...
+          </div>
+        )}
+
+        {error && (
+          <div style={{ color: '#ff5f56', fontSize: '13px', textAlign: 'center', padding: '40px 0' }}>
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && commits.map((commit, index) => (
           <motion.div
             key={commit.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05 }}
             style={{
               display: 'flex',
               alignItems: 'flex-start',
@@ -141,29 +276,43 @@ const Terminal = () => {
               {commit.type === 'active' ? '●' : '○'}
             </span>
             <div style={{ flex: 1 }}>
-              <span style={{ color: '#c6c6c6' }}>{commit.message}</span>
-              <span style={{ color: '#6a6a6a', marginLeft: '12px', fontSize: '11px' }}>
-                {commit.time}
-              </span>
+              <a
+                href={commit.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#c6c6c6', textDecoration: 'none' }}
+                title={commit.message}
+              >
+                <span style={{ color: '#5af78e', marginRight: '8px' }}>{commit.sha}</span>
+                <span style={{ color: '#ffbd2e', marginRight: '8px' }}>[{commit.repo}]</span>
+                {commit.message}
+              </a>
+              <div style={{ color: '#6a6a6a', marginTop: '4px', fontSize: '11px' }}>
+                <span style={{ color: '#888' }}>{commit.author}</span>
+                <span style={{ marginLeft: '12px' }}>{getTimeAgo(commit.date)}</span>
+              </div>
             </div>
           </motion.div>
         ))}
-        <motion.div
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 1, repeat: Infinity }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginTop: '20px',
-            color: '#5af78e',
-            fontSize: '14px'
-          }}
-        >
-          <span style={{ color: '#5af78e' }}>➜</span>
-          <span style={{ color: '#5af78e' }}>~</span>
-          <span style={{ width: '8px', height: '18px', background: '#5af78e' }}></span>
-        </motion.div>
+
+        {!loading && !error && (
+          <motion.div
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginTop: '20px',
+              color: '#5af78e',
+              fontSize: '14px'
+            }}
+          >
+            <span style={{ color: '#5af78e' }}>➜</span>
+            <span style={{ color: '#5af78e' }}>~</span>
+            <span style={{ width: '8px', height: '18px', background: '#5af78e' }}></span>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
@@ -493,7 +642,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <div className="header-title" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="header-title">
           <h1>Abhijeet Dhokne</h1>
         </div>
         <nav className="header-actions">
@@ -514,6 +663,7 @@ const Header = () => {
     </header>
   );
 };
+
 
 function App() {
   return (

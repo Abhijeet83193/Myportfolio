@@ -70,13 +70,7 @@ body {
 
 .header-title h1 {
   font-family: var(--font-logo);
-  font-size: 1.8rem;
-  color: var(--army-olive);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  letter-spacing: 1px;
 }
 
 .header-title h1:hover {

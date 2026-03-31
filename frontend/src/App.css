@@ -1,1 +1,16 @@
-/* Empty to avoid conflicts with index.css */
+
+
+/* Terminal scrollbar styling */
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-body::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 3px;
+}
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}
