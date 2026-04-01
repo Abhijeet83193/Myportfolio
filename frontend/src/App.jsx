@@ -913,6 +913,124 @@ const Education = () => {
   );
 };
 
+const Experience = () => {
+  const techStack = ['React', 'Node.js', 'MongoDB', 'SMTP', 'Express.js'];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false, amount: 0.1 }}
+      style={{ width: '100%', maxWidth: '1000px' }}
+    >
+      <motion.div
+        whileHover={{ y: -8, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+        style={{
+          background: 'rgba(114, 125, 115, 0.05)',
+          borderRadius: '24px',
+          padding: '2.5rem',
+          border: '1px solid var(--border-soft)',
+          transition: 'all 0.15s ease-out',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+          e.currentTarget.style.borderColor = 'var(--primary)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.borderColor = 'var(--border-soft)';
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{
+              width: '80px',
+              height: '80px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              overflow: 'hidden',
+              borderRadius: '12px'
+            }}
+          >
+            <img
+              src="/images/medicaps-logo-fin-Picsart-BackgroundRemover.png"
+              alt="Medicaps University"
+              className="medicaps-logo-blend"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </motion.div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Briefcase size={24} /> Backend Engineer
+            </h3>
+            <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
+              Hostel Resolve — Medicaps University
+            </p>
+            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2-Member Team</span>
+            </div>
+          </div>
+        </div>
+
+        <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+          Built a hostel complaint management system to digitize workflows and boost transparency by 40%.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+          {[
+            'Built REST APIs with Node.js & Express.js for complaint tracking',
+            'Integrated SMTP-based automated escalation for unresolved issues',
+            'Designed responsive React UI for students & hostel admin',
+            'Achieved 40% increase in hostel management transparency'
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.08 }}
+              viewport={{ once: false }}
+              style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
+            >
+              <div style={{ width: '6px', height: '6px', background: 'var(--army-olive)', borderRadius: '50%', marginTop: '7px', flexShrink: 0 }}></div>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{item}</span>
+            </motion.div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {techStack.map((tech, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: false }}
+              style={{
+                padding: '0.35rem 0.85rem',
+                background: 'rgba(114, 125, 115, 0.08)',
+                borderRadius: '20px',
+                fontSize: '0.8rem',
+                color: 'var(--text-main)',
+                border: '1px solid var(--border-soft)',
+                fontWeight: '500'
+              }}
+            >
+              {tech}
+            </motion.span>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const PlaceholderContent = ({ title }) => (
   <div style={{ padding: '4rem', textAlign: 'center', width: '100%', background: 'rgba(0,0,0,0.02)', borderRadius: '20px' }}>
     <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>Our {title} section is getting a creative makeover.</p>
@@ -927,7 +1045,7 @@ const MainLanding = ({ homeKey }) => {
       <Section id="what-i-do" title="What I Do"><WhatIDo /></Section>
       <Section id="features"><Features /></Section>
       <Section id="education" title="Education"><Education /></Section>
-      <Section id="experience" title="Experience"><PlaceholderContent title="Experience" /></Section>
+      <Section id="experience" title="Experience"><Experience /></Section>
       <Section id="projects" title="Projects"><PlaceholderContent title="Projects" /></Section>
       <Section id="open-source" title="Open Source"><PlaceholderContent title="Open Source" /></Section>
       <Section id="blog" title="Blog"><PlaceholderContent title="Blog" /></Section>
