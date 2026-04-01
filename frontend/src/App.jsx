@@ -39,7 +39,7 @@ const Section = ({ id, children, title }) => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.1 }}
+      viewport={{ once: false, amount: 0.1 }}
       className="view-section"
       style={{
         minHeight: id === 'home' ? 'auto' : '65vh',
@@ -180,15 +180,11 @@ const Terminal = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 1 }}
+    <div
       className="terminal-window"
       style={{
         background: '#1e1e1e',
-        borderRadius: '12px',
+        borderRadius: '8px',
         overflow: 'hidden',
         boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
         maxWidth: '900px',
@@ -316,48 +312,88 @@ const Terminal = () => {
           </motion.div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
-const Quote = () => (
-  <div className="quote-container" style={{ minHeight: 'calc(100vh - 100px)', padding: '60px 5%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', width: '100%' }}>
+const TypewriterText = ({ text, delay = 50, className, startDelay = 0, resetKey = 0 }) => {
+  const [displayed, setDisplayed] = useState('');
+
+  useEffect(() => {
+    setDisplayed('');
+    let index = 0;
+    
+    const startTimeout = setTimeout(() => {
+      const typeInterval = setInterval(() => {
+        if (index < text.length) {
+          index++;
+          setDisplayed(text.slice(0, index));
+        } else {
+          clearInterval(typeInterval);
+        }
+      }, delay);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(startTimeout);
+    };
+  }, [text, delay, startDelay, resetKey]);
+
+  return <span className={className}>{displayed}</span>;
+};
+
+const Quote = ({ homeKey }) => (
+  <div className="hero-section">
+    <div className="hero-grid">
+      {/* LEFT SIDE - Robot Mascot + Greeting */}
       <motion.div
-        initial={{ opacity: 0, x: -50 }}
+        className="hero-left"
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
         whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, amount: 0.1 }}
-        transition={{ duration: 1 }}
-        style={{ width: '250px', height: '250px' }}>
-        <DotLottieReact
-          src="https://lottie.host/39d6c4e7-3644-4c21-a229-39dcf70032ae/gAZ9iS1rgE.lottie"
-          loop
-          autoplay
-          style={{ width: '100%', height: '100%' }}
-        />
+        viewport={{ once: false }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="robot-container">
+          <DotLottieReact
+            src="https://lottie.host/39d6c4e7-3644-4c21-a229-39dcf70032ae/gAZ9iS1rgE.lottie"
+            loop
+            autoplay
+            className="robot-animation"
+          />
+        </div>
       </motion.div>
 
+      {/* RIGHT SIDE - Intro Text + Terminal */}
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        style={{ fontSize: '1.8rem', color: 'var(--primary)', fontWeight: '600' }}>
-        <span className="glitch-text" data-text="Hey, I'm GOJO, injecting code...">
-          <i>Hey,I'm GOJO. injecting code..</i>
-        </span>
+        className="hero-right"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: false }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        {/* Top: Main Intro Text */}
+        <div className="hero-intro">
+          <h1 className="hero-name">Hey, I'm <span className="highlight">GOJO</span> 👋</h1>
+          <p className="hero-tagline">
+            <TypewriterText text="Loading awesome experiences..." delay={60} startDelay={500} resetKey={homeKey} />
+          </p>
+        </div>
+
+        {/* Bottom: Terminal */}
+        <motion.div
+          className="hero-terminal-wrapper"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+        >
+          <Terminal />
+        </motion.div>
       </motion.div>
     </div>
-
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 1, delay: 0.3 }}
-      style={{ width: '100%', maxWidth: '1400px', display: 'flex', justifyContent: 'center' }}
-    >
-      <Terminal />
-    </motion.div>
   </div>
 );
 
@@ -382,7 +418,7 @@ const Intro = () => (
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: false, amount: 0.3 }}
       className="content-side"
     >
       <motion.h1 variants={textVariants} className="hero-title">Abhijeet Dhokne</motion.h1>
@@ -421,7 +457,7 @@ const Intro = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.1 }}
+      viewport={{ once: false, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="image-side"
     >
@@ -466,7 +502,7 @@ const WhatIDo = () => {
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             className="content-side"
           >
             <motion.h2 variants={textVariants} className="section-sub-title" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
@@ -479,7 +515,7 @@ const WhatIDo = () => {
           <motion.div
             initial={{ opacity: 0, x: item.reverse ? 50 : -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={{ once: false, amount: 0.1 }}
             transition={{ duration: 1 }}
             className="image-side"
           >
@@ -508,7 +544,7 @@ const ModernDev = () => (
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: false, amount: 0.3 }}
       className="content-side"
     >
       <motion.h2 variants={textVariants} className="section-sub-title">Modern Web Development</motion.h2>
@@ -532,7 +568,7 @@ const ModernDev = () => (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
+      viewport={{ once: false, amount: 0.1 }}
       transition={{ duration: 1 }}
       className="image-side"
     >
@@ -550,7 +586,7 @@ const Features = () => (
     </motion.div>
     <motion.div whileHover={{ y: -10 }} className="feature-card">
       <div className="feature-icon"><Briefcase size={40} /></div>
-      <h3>3+ Years</h3>
+      <h3>2+ Years</h3>
       <p>Experience in building scalable web applications.</p>
     </motion.div>
     <motion.div whileHover={{ y: -10 }} className="feature-card">
@@ -576,7 +612,7 @@ const Education = () => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.1 }}
+      viewport={{ once: false, amount: 0.1 }}
       style={{ width: '100%', maxWidth: '1000px' }}
     >
       <motion.div
@@ -659,7 +695,7 @@ const Education = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 style={{
                   padding: '0.5rem 1rem',
                   background: 'rgba(114, 125, 115, 0.08)',
@@ -681,7 +717,7 @@ const Education = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: false, amount: 0.1 }}
         style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
       >
         <motion.div
@@ -729,7 +765,7 @@ const Education = () => {
               </p>
               <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Passed: 2023
+                  2018 - 2023
                 </span>
                 <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
                   Grade: A+
@@ -758,7 +794,7 @@ const Education = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   style={{
                     padding: '0.5rem 1rem',
                     background: 'rgba(114, 125, 115, 0.08)',
@@ -781,7 +817,7 @@ const Education = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: false, amount: 0.1 }}
         style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
       >
         <motion.div
@@ -829,9 +865,11 @@ const Education = () => {
               </p>
               <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Nursery - 6th Grade
+                  2009 - 2017
                 </span>
-
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Grade: O
+                </span>
               </div>
             </div>
           </div>
@@ -853,7 +891,7 @@ const Education = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   style={{
                     padding: '0.5rem 1rem',
                     background: 'rgba(114, 125, 115, 0.08)',
@@ -881,10 +919,10 @@ const PlaceholderContent = ({ title }) => (
   </div>
 );
 
-const MainLanding = () => {
+const MainLanding = ({ homeKey }) => {
   return (
     <div className="home-view">
-      <Section id="home"><Quote /></Section>
+      <Section id="home" key={`home-${homeKey}`}><Quote /></Section>
       <Section id="intro"><Intro /></Section>
       <Section id="what-i-do" title="What I Do"><WhatIDo /></Section>
       <Section id="features"><Features /></Section>
@@ -898,7 +936,7 @@ const MainLanding = () => {
   );
 };
 
-const Header = () => {
+const Header = ({ homeKey, setHomeKey }) => {
   const [activePath, setActivePath] = useState(window.location.pathname);
   const isScrollingByNav = useRef(false);
 
@@ -945,12 +983,16 @@ const Header = () => {
     isScrollingByNav.current = true;
     const element = document.getElementById(item.targetId);
     if (element) {
+      const top = item.targetId === 'home' ? 0 : element.offsetTop - 80;
       window.scrollTo({
-        top: element.offsetTop - 80,
+        top,
         behavior: 'smooth'
       });
       window.history.pushState(null, '', item.path);
       setActivePath(item.path);
+    }
+    if (item.targetId === 'home') {
+      setHomeKey(prev => prev + 1);
     }
     setTimeout(() => { isScrollingByNav.current = false; }, 1000);
   };
@@ -958,7 +1000,15 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <div className="header-title">
+        <div className="header-title" onClick={(e) => {
+          e.preventDefault();
+          isScrollingByNav.current = true;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.history.pushState(null, '', '/');
+          setActivePath('/');
+          setHomeKey(prev => prev + 1);
+          setTimeout(() => { isScrollingByNav.current = false; }, 1000);
+        }} style={{ cursor: 'pointer' }}>
           <h1>Abhijeet Dhokne</h1>
         </div>
         <nav className="header-actions">
@@ -982,13 +1032,14 @@ const Header = () => {
 
 
 function App() {
+  const [homeKey, setHomeKey] = useState(0);
   return (
     <Router>
       <div className="app-container">
-        <Header />
+        <Header homeKey={homeKey} setHomeKey={setHomeKey} />
         <main className="main-content">
           <Routes>
-            <Route path="*" element={<MainLanding />} />
+            <Route path="*" element={<MainLanding homeKey={homeKey} />} />
           </Routes>
         </main>
       </div>
