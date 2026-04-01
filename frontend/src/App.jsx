@@ -11,7 +11,9 @@ import {
   ExternalLink,
   Github,
   Linkedin,
-  Instagram
+  Instagram,
+  BookOpen,
+  Smile
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -220,7 +222,7 @@ const Terminal = () => {
         scrollbarWidth: 'thin',
         scrollbarColor: '#4a4a4a #1e1e1e'
       }}
-      css={`{
+        css={`{
         &::-webkit-scrollbar {
           width: 6px;
         }
@@ -559,6 +561,320 @@ const Features = () => (
   </div>
 );
 
+const Education = () => {
+  const coursework = [
+    "Data Structures & Algorithms",
+    "Web Development",
+    "Database Management",
+    "Operating Systems",
+    "Object-Oriented Programming",
+    "Computer Networks"
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true, amount: 0.1 }}
+      style={{ width: '100%', maxWidth: '1000px' }}
+    >
+      <motion.div
+        whileHover={{ y: -8, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+        style={{
+          background: 'rgba(114, 125, 115, 0.05)',
+          borderRadius: '24px',
+          padding: '3rem',
+          border: '1px solid var(--border-soft)',
+          transition: 'all 0.15s ease-out',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+          e.currentTarget.style.borderColor = 'var(--primary)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.borderColor = 'var(--border-soft)';
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{
+              width: '110px',
+              height: '110px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              overflow: 'hidden',
+              borderRadius: '12px'
+            }}
+          >
+            <img
+              src="/images/medicaps-logo-fin-Picsart-BackgroundRemover.png"
+              alt="Medicaps University"
+              className="medicaps-logo-blend"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain'
+              }}
+            />
+          </motion.div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <GraduationCap size={28} /> B.Tech in Computer Science
+            </h3>
+            <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+              Medicaps University, Indore, Madhya Pradesh, India
+            </p>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                2023 - 2027
+              </span>
+              <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                CGPA: 7.55
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1.5rem' }}>
+          <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+            Actively collaborated on group projects, building real-world applications that solve practical problems. Gained hands-on experience in team-based development, agile workflows, and delivering production-ready solutions from concept to deployment.
+          </p>
+        </div>
+
+        <div style={{ marginTop: '2rem' }}>
+          <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+            Key Coursework
+          </h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            {coursework.map((subject, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(114, 125, 115, 0.08)',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--border-soft)',
+                  fontWeight: '500'
+                }}
+              >
+                {subject}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        viewport={{ once: true, amount: 0.1 }}
+        style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
+      >
+        <motion.div
+          whileHover={{ y: -8, scale: 1.02 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+          style={{
+            background: 'rgba(114, 125, 115, 0.05)',
+            borderRadius: '24px',
+            padding: '3rem',
+            border: '1px solid var(--border-soft)',
+            transition: 'all 0.15s ease-out',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+            e.currentTarget.style.borderColor = 'var(--primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.borderColor = 'var(--border-soft)';
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              style={{
+                width: '110px',
+                height: '110px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: 'rgba(114, 125, 115, 0.1)'
+              }}
+            >
+              <BookOpen size={48} color="var(--army-olive)" />
+            </motion.div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <GraduationCap size={28} /> High School
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+                Govt LBS Hindi H S School, Pandhurna, Chhindwara, Madhya Pradesh, India
+              </p>
+              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Passed: 2023
+                </span>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Grade: A+
+                </span>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Subject: PCM
+                </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1.5rem' }}>
+          <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+            Active member of the school music group, delivering stage performances at the district level. Part of a talented ensemble equipped with a wide range of classical instruments. Primarily served as the lead vocalist, bringing energy and passion to every live performance.
+          </p>
+        </div>
+
+        <div style={{ marginTop: '2rem' }}>
+            <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+              Key Subjects
+            </h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+              {['Physics', 'Chemistry', 'Maths', 'Hindi', 'English', 'Yoga'].map((subject, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(114, 125, 115, 0.08)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--text-main)',
+                    border: '1px solid var(--border-soft)',
+                    fontWeight: '500'
+                  }}
+                >
+                  {subject}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        viewport={{ once: true, amount: 0.1 }}
+        style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
+      >
+        <motion.div
+          whileHover={{ y: -8, scale: 1.02 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+          style={{
+            background: 'rgba(114, 125, 115, 0.05)',
+            borderRadius: '24px',
+            padding: '3rem',
+            border: '1px solid var(--border-soft)',
+            transition: 'all 0.15s ease-out',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+            e.currentTarget.style.borderColor = 'var(--primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.borderColor = 'var(--border-soft)';
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              style={{
+                width: '110px',
+                height: '110px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: 'rgba(114, 125, 115, 0.1)'
+              }}
+            >
+              <Smile size={48} color="var(--army-olive)" />
+            </motion.div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <GraduationCap size={28} /> Primary & Middle School
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+                New Sunflower English Medium School, Pandhurna, Madhya Pradesh, India
+              </p>
+              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Nursery - 6th Grade
+                </span>
+
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1.5rem' }}>
+            <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+              The most cherished chapter of my life — a time filled with curiosity, joy, and endless energy. Actively participated in sports competitions, dramas, and dance performances, discovering a deep love for the stage and teamwork. These formative years built the foundation for confidence, creativity, and a lifelong passion for performing arts.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+              Key Learnings
+            </h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+              {['Reading & Writing', 'Basic Mathematics', 'Environmental Science', 'Sports & Athletics', 'Drama & Theatre', 'Dance & Performing Arts', 'Team Collaboration'].map((subject, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(114, 125, 115, 0.08)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--text-main)',
+                    border: '1px solid var(--border-soft)',
+                    fontWeight: '500'
+                  }}
+                >
+                  {subject}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const PlaceholderContent = ({ title }) => (
   <div style={{ padding: '4rem', textAlign: 'center', width: '100%', background: 'rgba(0,0,0,0.02)', borderRadius: '20px' }}>
     <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>Our {title} section is getting a creative makeover.</p>
@@ -572,7 +888,7 @@ const MainLanding = () => {
       <Section id="intro"><Intro /></Section>
       <Section id="what-i-do" title="What I Do"><WhatIDo /></Section>
       <Section id="features"><Features /></Section>
-      <Section id="education" title="Education"><PlaceholderContent title="Education" /></Section>
+      <Section id="education" title="Education"><Education /></Section>
       <Section id="experience" title="Experience"><PlaceholderContent title="Experience" /></Section>
       <Section id="projects" title="Projects"><PlaceholderContent title="Projects" /></Section>
       <Section id="open-source" title="Open Source"><PlaceholderContent title="Open Source" /></Section>

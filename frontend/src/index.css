@@ -68,6 +68,11 @@ body {
   align-items: center;
 }
 
+.header-title {
+  display: flex;
+  align-items: center;
+}
+
 .header-title h1 {
   font-family: var(--font-logo);
   letter-spacing: 1px;
@@ -81,6 +86,23 @@ body {
 
 .header-title h1::before { content: '< '; opacity: 0.8; }
 .header-title h1::after { content: ' / >'; opacity: 0.8; }
+
+.logo-container {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.logo-container:hover svg path,
+.logo-container:hover svg text,
+.logo-container:hover svg circle {
+  filter: brightness(1.1);
+}
+
+/* Medicaps Logo Blend */
+.medicaps-logo-blend {
+  mix-blend-mode: multiply;
+  filter: contrast(1.15) brightness(0.92) saturate(1.1);
+}
 
 .action-buttons {
   display: flex;
