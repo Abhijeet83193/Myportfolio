@@ -994,7 +994,7 @@ const Experience = () => {
                 <Briefcase size={24} /> Backend Engineer
               </h3>
               <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
-                Hostel Resolve — Medicaps University
+                Medicaps University
               </p>
               <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
