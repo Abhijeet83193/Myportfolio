@@ -11,13 +11,13 @@ import {
   ExternalLink,
   Github,
   Linkedin,
-  Instagram,
   BookOpen,
   Smile
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Projects from './components/Projects';
+import Skills from './components/Skills';
 
 // --- Custom X Icon ---
 const XIcon = ({ size = 20, color = "currentColor" }) => (
@@ -441,7 +441,6 @@ const Intro = () => (
         <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
         <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
         <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
-        <a href="https://www.instagram.com/abhi.xiv.hz/" className="social-icon-box instagram"><Instagram size={20} /></a>
       </div>
 
       <a
@@ -1048,8 +1047,8 @@ const MainLanding = ({ homeKey }) => {
       <Section id="education" title="Education"><Education /></Section>
       <Section id="experience" title="Experience"><Experience /></Section>
       <Section id="projects" title="Projects"><Projects /></Section>
-      <Section id="skills" title="Skills"><PlaceholderContent title="Skills" /></Section>
-      <Section id="certifications" title="Certifications"><PlaceholderContent title="Certifications" /></Section>
+      <Section id="skills" title="Skills"><Skills /></Section>
+      <Section id="certifications" title="Achievements"><PlaceholderContent title="Achievements" /></Section>
       <Section id="contact" title="Contact Me"><PlaceholderContent title="Contact Me" /></Section>
     </div>
   );
@@ -1093,7 +1092,7 @@ const Header = ({ homeKey, setHomeKey }) => {
     { label: 'Experience', path: '/experience', targetId: 'experience' },
     { label: 'Projects', path: '/projects', targetId: 'projects' },
     { label: 'Skills', path: '/skills', targetId: 'skills' },
-    { label: 'Certifications', path: '/certifications', targetId: 'certifications' },
+    { label: 'Achievements', path: '/achievements', targetId: 'certifications' },
     { label: 'Contact Me', path: '/contact', targetId: 'contact' }
   ];
 

@@ -79,8 +79,14 @@ const ProjectCard = ({ project, index }) => {
             {project.liveUrl && (
               <motion.a
                 href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={project.isMe ? "_self" : "_blank"}
+                rel={project.isMe ? "" : "noopener noreferrer"}
+                onClick={(e) => {
+                  if (project.isMe) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 style={{
@@ -97,7 +103,7 @@ const ProjectCard = ({ project, index }) => {
                 }}
               >
                 <ExternalLink size={14} />
-                Live
+                {project.isMe ? "Me" : "Live"}
               </motion.a>
             )}
             {project.githubUrl && (
