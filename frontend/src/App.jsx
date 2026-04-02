@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import Projects from './components/Projects';
 
 // --- Custom X Icon ---
 const XIcon = ({ size = 20, color = "currentColor" }) => (
@@ -917,37 +918,13 @@ const Experience = () => {
   const techStack = ['React', 'Node.js', 'MongoDB', 'SMTP', 'Express.js'];
 
   return (
-    <div style={{ width: '100%', maxWidth: '1200px' }}>
-      <div className="two-col-layout">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
-          className="content-side"
-        >
-          <motion.p variants={textVariants} style={{ fontSize: '1.3rem', lineHeight: '1.8', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1.5rem' }}>
-            💼 I have worked as a Full Stack Developer using the MERN stack.
-          </motion.p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.1 }}
-          transition={{ duration: 1 }}
-          className="image-side"
-        >
-          <img src="/images/experience-section image.png" alt="Experience Illustration" className="section-illustration" />
-        </motion.div>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.1 }}
-        style={{ width: '100%', maxWidth: '1000px', margin: '3rem auto 0' }}
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false, amount: 0.1 }}
+      style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
+    >
         <motion.div
           whileHover={{ y: -8, scale: 1.02 }}
           transition={{ type: 'spring', stiffness: 500, damping: 15 }}
@@ -991,7 +968,7 @@ const Experience = () => {
             </motion.div>
             <div style={{ flex: 1 }}>
               <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Briefcase size={24} /> Backend Engineer
+                <Briefcase size={24} /> MERN Stack Developer
               </h3>
               <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
                 Medicaps University
@@ -1051,8 +1028,7 @@ const Experience = () => {
             ))}
           </div>
         </motion.div>
-      </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -1071,9 +1047,9 @@ const MainLanding = ({ homeKey }) => {
       <Section id="features"><Features /></Section>
       <Section id="education" title="Education"><Education /></Section>
       <Section id="experience" title="Experience"><Experience /></Section>
-      <Section id="projects" title="Projects"><PlaceholderContent title="Projects" /></Section>
-      <Section id="open-source" title="Open Source"><PlaceholderContent title="Open Source" /></Section>
-      <Section id="blog" title="Blog"><PlaceholderContent title="Blog" /></Section>
+      <Section id="projects" title="Projects"><Projects /></Section>
+      <Section id="skills" title="Skills"><PlaceholderContent title="Skills" /></Section>
+      <Section id="certifications" title="Certifications"><PlaceholderContent title="Certifications" /></Section>
       <Section id="contact" title="Contact Me"><PlaceholderContent title="Contact Me" /></Section>
     </div>
   );
@@ -1116,8 +1092,8 @@ const Header = ({ homeKey, setHomeKey }) => {
     { label: 'Education', path: '/education', targetId: 'education' },
     { label: 'Experience', path: '/experience', targetId: 'experience' },
     { label: 'Projects', path: '/projects', targetId: 'projects' },
-    { label: 'Open Source', path: '/open-source', targetId: 'open-source' },
-    { label: 'Blog', path: '/blog', targetId: 'blog' },
+    { label: 'Skills', path: '/skills', targetId: 'skills' },
+    { label: 'Certifications', path: '/certifications', targetId: 'certifications' },
     { label: 'Contact Me', path: '/contact', targetId: 'contact' }
   ];
 
