@@ -144,50 +144,56 @@ const Terminal = () => {
 
   const fetchCommits = async () => {
     try {
-      // Step 1: Get the most recently updated public repository
-      const repoResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=1`);
+      // Use the events endpoint to get all public activity directly
+      const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=15`);
       
-      if (!repoResponse.ok) throw new Error('Repo fetch failed');
-      const repos = await repoResponse.json();
+      if (!response.ok) {
+        if (response.status === 403) throw new Error('API Rate Limit exceeded (try again later)');
+        throw new Error('Activity fetch failed');
+      }
       
-      if (repos.length === 0) {
-        setError('No public repositories found');
+      const events = await response.json();
+      
+      // Filter only PushEvents (which contain commits)
+      const pushEvents = events.filter(e => e.type === 'PushEvent');
+      
+      if (pushEvents.length === 0) {
+        setError('No recent public git activity found');
         setLoading(false);
         return;
       }
 
-      const latestRepo = repos[0].name;
+      // Extract commits from push events
+      const allCommits = [];
+      pushEvents.forEach(event => {
+        const repoName = event.repo.name.split('/')[1];
+        event.payload.commits.forEach(commit => {
+          allCommits.push({
+            id: commit.sha,
+            sha: commit.sha.substring(0, 7),
+            message: commit.message.split('\n')[0],
+            author: commit.author?.name || 'Abhijeet',
+            date: new Date(event.created_at),
+            url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
+            repo: repoName,
+            type: 'commit'
+          });
+        });
+      });
 
-      // Step 2: Fetch actual commits from that repository
-      const commitsResponse = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${latestRepo}/commits?per_page=10`);
+      // Limit to last 10 and reverse for terminal style (newest at bottom)
+      const finalCommits = allCommits.slice(0, 10).reverse();
       
-      if (!commitsResponse.ok) throw new Error('Commits fetch failed');
-      const commitsData = await commitsResponse.json();
-
-      const allCommits = commitsData.map(item => ({
-        id: item.sha,
-        sha: item.sha.substring(0, 7),
-        message: item.commit.message.split('\n')[0],
-        author: item.commit.author?.name || 'Abhijeet',
-        date: new Date(item.commit.author?.date),
-        url: item.html_url,
-        repo: latestRepo,
-        type: 'commit'
-      }));
-
-      // Reverse so newest is at the bottom (terminal style)
-      const latestCommits = allCommits.reverse();
-      
-      if (latestCommits.length > 0) {
-        latestCommits[latestCommits.length - 1].type = 'active';
+      if (finalCommits.length > 0) {
+        finalCommits[finalCommits.length - 1].type = 'active';
       }
 
-      setCommits(latestCommits);
+      setCommits(finalCommits);
       setLoading(false);
       setError(null);
     } catch (err) {
       console.error('Error fetching activity:', err);
-      setError('Unable to load activity');
+      setError(err.message || 'Unable to load activity');
       setLoading(false);
     }
   };
@@ -355,7 +361,7 @@ const TypewriterText = ({ text, delay = 50, className, startDelay = 0, resetKey 
   useEffect(() => {
     setDisplayed('');
     let index = 0;
-    
+
     const startTimeout = setTimeout(() => {
       const typeInterval = setInterval(() => {
         if (index < text.length) {
@@ -749,10 +755,10 @@ const Education = () => {
       </motion.div>
 
       <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: false, amount: 0.1 }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, amount: 0.1 }}
         style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
       >
         <motion.div
@@ -808,17 +814,17 @@ const Education = () => {
                 <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
                   Subject: PCM
                 </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ marginTop: '1.5rem' }}>
-          <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
-            Active member of the school music group, delivering stage performances at the district level. Part of a talented ensemble equipped with a wide range of classical instruments. Primarily served as the lead vocalist, bringing energy and passion to every live performance.
-          </p>
-        </div>
+          <div style={{ marginTop: '1.5rem' }}>
+            <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+              Active member of the school music group, delivering stage performances at the district level. Part of a talented ensemble equipped with a wide range of classical instruments. Primarily served as the lead vocalist, bringing energy and passion to every live performance.
+            </p>
+          </div>
 
-        <div style={{ marginTop: '2rem' }}>
+          <div style={{ marginTop: '2rem' }}>
             <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
               Key Subjects
             </h4>
@@ -959,109 +965,109 @@ const Experience = () => {
       viewport={{ once: false, amount: 0.1 }}
       style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
     >
-        <motion.div
-          whileHover={{ y: -8, scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-          style={{
-            background: 'rgba(114, 125, 115, 0.05)',
-            borderRadius: '24px',
-            padding: '2.5rem',
-            border: '1px solid var(--border-soft)',
-            transition: 'all 0.15s ease-out',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
-            e.currentTarget.style.borderColor = 'var(--primary)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-            e.currentTarget.style.borderColor = 'var(--border-soft)';
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              style={{
-                width: '80px',
-                height: '80px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                overflow: 'hidden',
-                borderRadius: '12px'
-              }}
-            >
-              <img
-                src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
-                alt="Medicaps University"
-                className="medicaps-logo-blend"
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
-            </motion.div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Briefcase size={24} /> MERN Stack Developer
-              </h3>
-              <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
-                Medicaps University
-              </p>
-              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2-Member Team</span>
-              </div>
+      <motion.div
+        whileHover={{ y: -8, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+        style={{
+          background: 'rgba(114, 125, 115, 0.05)',
+          borderRadius: '24px',
+          padding: '2.5rem',
+          border: '1px solid var(--border-soft)',
+          transition: 'all 0.15s ease-out',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+          e.currentTarget.style.borderColor = 'var(--primary)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.borderColor = 'var(--border-soft)';
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{
+              width: '80px',
+              height: '80px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              overflow: 'hidden',
+              borderRadius: '12px'
+            }}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
+              alt="Medicaps University"
+              className="medicaps-logo-blend"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </motion.div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Briefcase size={24} /> MERN Stack Developer
+            </h3>
+            <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
+              Medicaps University
+            </p>
+            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2-Member Team</span>
             </div>
           </div>
+        </div>
 
-          <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-            Built a hostel complaint management system to digitize workflows and boost transparency by 40%.
-          </p>
+        <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+          Built a hostel complaint management system to digitize workflows and boost transparency by 40%.
+        </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            {[
-              'Built REST APIs with Node.js & Express.js for complaint tracking',
-              'Integrated SMTP-based automated escalation for unresolved issues',
-              'Designed responsive React UI for students & hostel admin',
-              'Achieved 40% increase in hostel management transparency'
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.08 }}
-                viewport={{ once: false }}
-                style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
-              >
-                <div style={{ width: '6px', height: '6px', background: 'var(--army-olive)', borderRadius: '50%', marginTop: '7px', flexShrink: 0 }}></div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{item}</span>
-              </motion.div>
-            ))}
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+          {[
+            'Built REST APIs with Node.js & Express.js for complaint tracking',
+            'Integrated SMTP-based automated escalation for unresolved issues',
+            'Designed responsive React UI for students & hostel admin',
+            'Achieved 40% increase in hostel management transparency'
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.08 }}
+              viewport={{ once: false }}
+              style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
+            >
+              <div style={{ width: '6px', height: '6px', background: 'var(--army-olive)', borderRadius: '50%', marginTop: '7px', flexShrink: 0 }}></div>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{item}</span>
+            </motion.div>
+          ))}
+        </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            {techStack.map((tech, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: false }}
-                style={{
-                  padding: '0.35rem 0.85rem',
-                  background: 'rgba(114, 125, 115, 0.08)',
-                  borderRadius: '20px',
-                  fontSize: '0.8rem',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-soft)',
-                  fontWeight: '500'
-                }}
-              >
-                {tech}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {techStack.map((tech, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: false }}
+              style={{
+                padding: '0.35rem 0.85rem',
+                background: 'rgba(114, 125, 115, 0.08)',
+                borderRadius: '20px',
+                fontSize: '0.8rem',
+                color: 'var(--text-main)',
+                border: '1px solid var(--border-soft)',
+                fontWeight: '500'
+              }}
+            >
+              {tech}
+            </motion.span>
+          ))}
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -1240,7 +1246,7 @@ const Footer = () => (
       whileInView={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      whileHover={{ 
+      whileHover={{
         y: -15,
         rotate: -1,
         boxShadow: '0 25px 50px rgba(0, 0, 0, 0.4), 0 0 0 2px #4a6fa5'
