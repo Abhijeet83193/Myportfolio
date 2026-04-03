@@ -139,52 +139,8 @@ const Projects = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.1 }}
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
-      {/* Introduction Section */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '2.5rem',
-        padding: '2.5rem 2rem',
-        background: 'rgba(114, 125, 115, 0.05)',
-        borderRadius: '20px',
-        border: '1px solid var(--border-soft)'
-      }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1rem' }}>
-            <Code2 size={28} color="var(--army-olive)" />
-            <h3 style={{
-              fontSize: '1.5rem',
-              fontWeight: '700',
-              color: 'var(--army-olive)',
-              margin: 0
-            }}>
-              My Projects
-            </h3>
-            <Rocket size={28} color="var(--army-olive)" />
-          </div>
-          <p style={{
-            fontSize: '1.05rem',
-            lineHeight: '1.8',
-            color: 'var(--text-muted)',
-            maxWidth: '700px',
-            margin: '0 auto'
-          }}>
-            Here you'll find a collection of projects I've built — from practice clones to real-world applications.
-            Each project reflects my learning journey, problem-solving approach, and passion for turning ideas into functional digital experiences.
-          </p>
-        </motion.div>
-      </div>
-
       {/* Sort Filter Bar */}
       <div style={{
         display: 'flex',
@@ -269,20 +225,16 @@ const Projects = () => {
         gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
         gap: '2rem'
       }}>
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              layout
-            >
-              <ProjectCard project={project} index={index} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {filteredProjects.map((project, index) => (
+          <motion.div
+            key={project.title}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 + index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <ProjectCard project={project} index={index} />
+          </motion.div>
+        ))}
         {filteredProjects.length === 0 && (
           <div style={{
             gridColumn: '1 / -1',

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Kranky&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Kranky&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
 
 html {
   scroll-behavior: smooth;
@@ -40,6 +40,36 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+/* Modal Scrollable Content */
+.modal-scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-scrollable-content::-webkit-scrollbar-track {
+  background: #F0F0D7;
+}
+.modal-scrollable-content::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+.modal-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: var(--army-olive);
+}
+
+/* Global Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--army-olive);
 }
 
 .app-container {
@@ -511,6 +541,7 @@ body {
 .social-icon-box.github { background: #24292e; }
 .social-icon-box.linkedin { background: #0a66c2; }
 .social-icon-box.x-icon { background: #000000; }
+.social-icon-box.google { background: #4285F4; }
 .social-icon-box.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
 .btn-primary {

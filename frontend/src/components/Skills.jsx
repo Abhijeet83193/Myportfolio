@@ -277,25 +277,11 @@ const Skills = () => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: false, amount: 0.1 }}
       className="skills-section"
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
-      <div className="skills-header">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          viewport={{ once: false }}
-        >
-          <h2 className="skills-heading">Tech Stack</h2>
-          <p className="skills-subheading">
-            Technologies and tools I work with to bring ideas to life.
-          </p>
-        </motion.div>
-      </div>
-
       {/* Category Filter Bar */}
       <div style={{
         display: 'flex',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Briefcase,
@@ -12,12 +12,19 @@ import {
   Github,
   Linkedin,
   BookOpen,
-  Smile
+  Smile,
+  Trophy,
+  Rocket,
+  Cpu,
+  Award,
+  Globe
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
+import Achievements from './components/Achievements';
+import Contact from './components/Contact';
 
 // --- Custom X Icon ---
 const XIcon = ({ size = 20, color = "currentColor" }) => (
@@ -33,13 +40,13 @@ const XIcon = ({ size = 20, color = "currentColor" }) => (
 );
 
 // --- Generic Section Wrapper ---
-const Section = ({ id, children, title }) => {
+const Section = ({ id, children, title, subtitle, description }) => {
   return (
     <motion.section
       id={id}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.8, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: false, amount: 0.1 }}
       className="view-section"
       style={{
@@ -47,7 +54,80 @@ const Section = ({ id, children, title }) => {
         padding: id === 'home' ? '0' : '60px 0'
       }}
     >
-      {title && <h2 className="section-title">{title}</h2>}
+      {title && (
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '3rem'
+        }}>
+          <motion.h2
+            className="section-title"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: '3rem',
+              fontWeight: 900,
+              color: 'var(--army-olive)',
+              marginBottom: '0.5rem',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            {title}
+          </motion.h2>
+
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, scaleX: 0 }}
+              whileInView={{ opacity: 1, scaleX: 1 }}
+              transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true }}
+              style={{
+                fontSize: '0.8rem',
+                color: 'var(--primary)',
+                fontWeight: '700',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                marginBottom: '1rem'
+              }}
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ delay: 0.45, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true }}
+            style={{
+              width: '50px',
+              height: '2px',
+              background: 'var(--army-olive)',
+              margin: '0 auto 1.25rem'
+            }}
+          />
+
+          {description && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.55, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true }}
+              style={{
+                fontSize: '1.05rem',
+                lineHeight: '1.7',
+                color: 'var(--text-muted)',
+                maxWidth: '550px',
+                margin: '0 auto'
+              }}
+            >
+              {description}
+            </motion.p>
+          )}
+        </div>
+      )}
       {children}
     </motion.section>
   );
@@ -441,6 +521,7 @@ const Intro = () => (
         <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
         <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
         <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
+        <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="social-icon-box google"><Globe size={20} /></a>
       </div>
 
       <a
@@ -611,7 +692,7 @@ const Education = () => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: false, amount: 0.1 }}
       style={{ width: '100%', maxWidth: '1000px' }}
     >
@@ -714,10 +795,10 @@ const Education = () => {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        viewport={{ once: false, amount: 0.1 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false, amount: 0.1 }}
         style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
       >
         <motion.div
@@ -920,7 +1001,7 @@ const Experience = () => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: false, amount: 0.1 }}
       style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
     >
@@ -1042,14 +1123,28 @@ const MainLanding = ({ homeKey }) => {
     <div className="home-view">
       <Section id="home" key={`home-${homeKey}`}><Quote /></Section>
       <Section id="intro"><Intro /></Section>
-      <Section id="what-i-do" title="What I Do"><WhatIDo /></Section>
+      <Section id="what-i-do" title="What I Do" subtitle="My Expertise" description="Turning complex problems into elegant, scalable solutions — one component at a time.">
+        <WhatIDo />
+      </Section>
       <Section id="features"><Features /></Section>
-      <Section id="education" title="Education"><Education /></Section>
-      <Section id="experience" title="Experience"><Experience /></Section>
-      <Section id="projects" title="Projects"><Projects /></Section>
-      <Section id="skills" title="Skills"><Skills /></Section>
-      <Section id="certifications" title="Achievements"><PlaceholderContent title="Achievements" /></Section>
-      <Section id="contact" title="Contact Me"><PlaceholderContent title="Contact Me" /></Section>
+      <Section id="education" title="Education" subtitle="Academic Journey" description="Building a strong foundation in computer science while exploring the endless possibilities of technology.">
+        <Education />
+      </Section>
+      <Section id="experience" title="Experience" subtitle="Professional Growth" description="Real-world experience building production-grade applications that solve actual problems.">
+        <Experience />
+      </Section>
+      <Section id="projects" title="Projects" subtitle="Built with Passion" description="From practice clones to full-stack applications — each project is a milestone in my developer journey.">
+        <Projects />
+      </Section>
+      <Section id="skills" title="Skills" subtitle="Tech Arsenal" description="The tools, languages, and frameworks I use to bring ideas to life.">
+        <Skills />
+      </Section>
+      <Section id="achievements" title="Achievements" subtitle="Badges of Honor" description="Recognized certifications and competitive programming profiles that reflect my commitment to continuous learning.">
+        <Achievements />
+      </Section>
+      <Section id="contact" title="Contact Me" subtitle="Let's Connect" description="Have a project in mind or just want to say hi? I'd love to hear from you.">
+        <Contact />
+      </Section>
     </div>
   );
 };
