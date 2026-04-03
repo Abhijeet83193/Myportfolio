@@ -144,100 +144,50 @@ const Terminal = () => {
 
   const fetchCommits = async () => {
     try {
-      const token = import.meta.env.VITE_GITHUB_TOKEN;
-
-      const headers = {
-        'Content-Type': 'application/json',
-      };
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
+      // Step 1: Get the most recently updated public repository
+      const repoResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=1`);
+      
+      if (!repoResponse.ok) throw new Error('Repo fetch failed');
+      const repos = await repoResponse.json();
+      
+      if (repos.length === 0) {
+        setError('No public repositories found');
+        setLoading(false);
+        return;
       }
 
-      // Using GraphQL API to fetch recent commits across all repositories
-      const query = `{
-        viewer {
-          repositories(first: 10, orderBy: {field: UPDATED_AT, direction: DESC}) {
-            nodes {
-              name
-              url
-              defaultBranchRef {
-                target {
-                  ... on Commit {
-                    history(first: 5) {
-                      nodes {
-                        oid
-                        message
-                        author {
-                          name
-                          avatarUrl
-                        }
-                        committedDate
-                        url
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }`;
+      const latestRepo = repos[0].name;
 
-      const response = await fetch('https://api.github.com/graphql', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ query }),
-      });
+      // Step 2: Fetch actual commits from that repository
+      const commitsResponse = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${latestRepo}/commits?per_page=10`);
+      
+      if (!commitsResponse.ok) throw new Error('Commits fetch failed');
+      const commitsData = await commitsResponse.json();
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      const allCommits = commitsData.map(item => ({
+        id: item.sha,
+        sha: item.sha.substring(0, 7),
+        message: item.commit.message.split('\n')[0],
+        author: item.commit.author?.name || 'Abhijeet',
+        date: new Date(item.commit.author?.date),
+        url: item.html_url,
+        repo: latestRepo,
+        type: 'commit'
+      }));
+
+      // Reverse so newest is at the bottom (terminal style)
+      const latestCommits = allCommits.reverse();
+      
+      if (latestCommits.length > 0) {
+        latestCommits[latestCommits.length - 1].type = 'active';
       }
-
-      const result = await response.json();
-      console.log('GraphQL result:', result);
-
-      if (result.errors) {
-        console.error('GraphQL errors:', result.errors);
-        throw new Error('GraphQL error');
-      }
-
-      const repos = result.data?.viewer?.repositories?.nodes || [];
-      const allCommits = [];
-
-      repos.forEach(repo => {
-        const commits = repo.defaultBranchRef?.target?.history?.nodes || [];
-        commits.forEach((commit, idx) => {
-          allCommits.push({
-            id: `${repo.name}-${commit.oid}`,
-            sha: commit.oid.substring(0, 7),
-            message: commit.message.split('\n')[0],
-            author: commit.author?.name || 'Unknown',
-            date: new Date(commit.committedDate),
-            url: commit.url,
-            repo: repo.name,
-            type: allCommits.length === 0 ? 'active' : 'commit',
-          });
-        });
-      });
-
-      // Sort by date, oldest first (newest at bottom with cursor)
-      allCommits.sort((a, b) => a.date - b.date);
-      // Mark newest (last) as active
-      if (allCommits.length > 0) {
-        allCommits[allCommits.length - 1].type = 'active';
-        // Reset others to 'commit'
-        allCommits.forEach((c, i) => {
-          if (i !== allCommits.length - 1) c.type = 'commit';
-        });
-      }
-      const latestCommits = allCommits;
 
       setCommits(latestCommits);
       setLoading(false);
       setError(null);
     } catch (err) {
-      console.error('Error fetching commits:', err);
-      setError('Unable to load commits');
+      console.error('Error fetching activity:', err);
+      setError('Unable to load activity');
       setLoading(false);
     }
   };
