@@ -1289,8 +1289,8 @@ function App() {
           <Routes>
             <Route path="*" element={<MainLanding homeKey={homeKey} />} />
           </Routes>
+          <Footer />
         </main>
-        <Footer />
       </div>
     </Router>
   );

@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Kranky&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
 }
 
 :root {
@@ -38,8 +40,6 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
 /* Modal Scrollable Content */
@@ -75,7 +75,8 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Header */
@@ -173,8 +174,11 @@ body {
 
 /* Main Content */
 .main-content {
-  padding: 0 1.5rem;
+  padding: 0;
   flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 .home-view {
