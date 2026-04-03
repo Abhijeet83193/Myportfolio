@@ -1104,7 +1104,7 @@ const MainLanding = ({ homeKey }) => {
 };
 
 const Header = ({ homeKey, setHomeKey }) => {
-  const [activePath, setActivePath] = useState(window.location.pathname);
+  const [activePath, setActivePath] = useState(window.location.hash.replace('#', '') || '/');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isScrollingByNav = useRef(false);
 
@@ -1122,10 +1122,10 @@ const Header = ({ homeKey, setHomeKey }) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
-          const path = id === 'home' ? '/' : `/${id}`;
-          if (window.location.pathname !== path) {
-            window.history.replaceState(null, '', path);
-            setActivePath(path);
+          const hashPath = id === 'home' ? '#/' : `#/${id}`;
+          if (window.location.hash !== hashPath) {
+            window.history.replaceState(null, '', hashPath);
+            setActivePath(id === 'home' ? '/' : `/${id}`);
           }
         }
       });
@@ -1157,7 +1157,7 @@ const Header = ({ homeKey, setHomeKey }) => {
         top,
         behavior: 'smooth'
       });
-      window.history.pushState(null, '', item.path);
+      window.history.pushState(null, '', `/#${item.path}`);
       setActivePath(item.path);
     }
     if (item.targetId === 'home') {
@@ -1173,7 +1173,7 @@ const Header = ({ homeKey, setHomeKey }) => {
           e.preventDefault();
           isScrollingByNav.current = true;
           window.scrollTo({ top: 0, behavior: 'smooth' });
-          window.history.pushState(null, '', '/');
+          window.history.pushState(null, '', '/#/');
           setActivePath('/');
           setHomeKey(prev => prev + 1);
           setMobileMenuOpen(false);
