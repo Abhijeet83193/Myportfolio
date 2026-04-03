@@ -167,18 +167,20 @@ const Terminal = () => {
       const allCommits = [];
       pushEvents.forEach(event => {
         const repoName = event.repo.name.split('/')[1];
-        event.payload.commits.forEach(commit => {
-          allCommits.push({
-            id: commit.sha,
-            sha: commit.sha.substring(0, 7),
-            message: commit.message.split('\n')[0],
-            author: commit.author?.name || 'Abhijeet',
-            date: new Date(event.created_at),
-            url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-            repo: repoName,
-            type: 'commit'
+        if (event.payload && event.payload.commits) {
+          event.payload.commits.forEach(commit => {
+            allCommits.push({
+              id: commit.sha,
+              sha: commit.sha.substring(0, 7),
+              message: commit.message.split('\n')[0],
+              author: commit.author?.name || 'Abhijeet',
+              date: new Date(event.created_at),
+              url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
+              repo: repoName,
+              type: 'commit'
+            });
           });
-        });
+        }
       });
 
       // Limit to last 10 and reverse for terminal style (newest at bottom)
