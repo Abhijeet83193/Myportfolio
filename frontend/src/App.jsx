@@ -494,7 +494,7 @@ const Intro = () => (
       transition={{ duration: 1 }}
       className="image-side"
     >
-      <img src="/images/original-d2eee8c45af2c47792e18fc174bbdd5f.png" alt="Developer Illustration" className="section-illustration" style={{ mixBlendMode: 'multiply' }} />
+      <img src={`${import.meta.env.BASE_URL}images/original-d2eee8c45af2c47792e18fc174bbdd5f.png`} alt="Developer Illustration" className="section-illustration" style={{ mixBlendMode: 'multiply' }} />
     </motion.div>
   </div>
 );
@@ -505,7 +505,7 @@ const WhatIDo = () => {
       title: "Building Full-Stack Web Applications",
       icon: "🌐",
       description: "Creating scalable and modern web applications from frontend to backend. I specialize in building complete solutions using React for dynamic frontends and Node.js with MongoDB for robust backend systems. From conceptualization to deployment, I ensure seamless integration across all layers of the application stack.",
-      image: "/images/fullstack_illustration.jpg",
+      image: `${import.meta.env.BASE_URL}images/fullstack_illustration.jpg`,
       reverse: true,
       type: "image"
     },
@@ -513,7 +513,7 @@ const WhatIDo = () => {
       title: "Crafting Modern User Interfaces",
       icon: "🎨",
       description: "Designing clean, responsive, and user-friendly interfaces for better user experience. I leverage modern frameworks like React combined with Framer Motion to create engaging, animated experiences. Every interface is meticulously crafted with accessibility and performance in mind, ensuring users enjoy smooth interactions across all devices.",
-      image: "/images/backend_illustration.jpg",
+      image: `${import.meta.env.BASE_URL}images/backend_illustration.jpg`,
       reverse: false,
       type: "image"
     },
@@ -605,7 +605,7 @@ const ModernDev = () => (
       transition={{ duration: 1 }}
       className="image-side"
     >
-      <img src="/images/web_dev.jpg" alt="Modern Web Dev Illustration" className="section-illustration" />
+      <img src={`${import.meta.env.BASE_URL}images/web_dev.jpg`} alt="Modern Web Dev Illustration" className="section-illustration" />
     </motion.div>
   </div>
 );
@@ -684,7 +684,7 @@ const Education = () => {
             }}
           >
             <img
-              src="/images/medicaps-logo-fin-Picsart-BackgroundRemover.png"
+              src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
               alt="Medicaps University"
               className="medicaps-logo-blend"
               style={{
@@ -994,7 +994,7 @@ const Experience = () => {
               }}
             >
               <img
-                src="/images/medicaps-logo-fin-Picsart-BackgroundRemover.png"
+                src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
                 alt="Medicaps University"
                 className="medicaps-logo-blend"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}

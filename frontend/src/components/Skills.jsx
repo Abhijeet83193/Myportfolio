@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
+const BASE = import.meta.env.BASE_URL;
 
 const bentoCards = [
   {
@@ -79,7 +80,7 @@ const bentoCards = [
   {
     id: 'tailwind',
     name: 'Tailwind',
-    icon: '/images/tailwind-css-icon.jpg',
+    icon: `${BASE}images/tailwind-css-icon.jpg`,
     category: 'Frontend',
     span: 'normal',
     color: '#06B6D4',
@@ -88,7 +89,7 @@ const bentoCards = [
   {
     id: 'bootstrap',
     name: 'Bootstrap',
-    icon: '/images/bootsrap.jpg',
+    icon: `${BASE}images/bootsrap.jpg`,
     category: 'Frontend',
     span: 'normal',
     color: '#7952B3',
@@ -97,7 +98,7 @@ const bentoCards = [
   {
     id: 'java',
     name: 'Java',
-    icon: '/images/java.jpg',
+    icon: `${BASE}images/java.jpg`,
     category: 'Language',
     span: 'normal',
     color: '#ED8B00',
@@ -133,7 +134,7 @@ const bentoCards = [
   {
     id: 'vscode',
     name: 'VS Code',
-    icon: '/images/visual-studio-code-1-1.jpg',
+    icon: `${BASE}images/visual-studio-code-1-1.jpg`,
     category: 'Tools',
     span: 'normal',
     color: '#007ACC',

@@ -79,7 +79,7 @@ const Contact = () => {
               flexShrink: 0
             }}>
               <img
-                src="/images/my-profile.jpg"
+                src={`${import.meta.env.BASE_URL}images/my-profile.jpg`}
                 alt="Abhijeet Dhokne"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
@@ -152,7 +152,7 @@ const Contact = () => {
                   justifyContent: 'center',
                   color: '#EA4335'
                 }}>
-                <img src="/images/google_mail_gmail_logo_icon_159346.png" alt="Gmail" style={{ width: '18px', height: '18px' }} />
+                <img src={`${import.meta.env.BASE_URL}images/google_mail_gmail_logo_icon_159346.png`} alt="Gmail" style={{ width: '18px', height: '18px' }} />
                 </div>
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Email</p>
