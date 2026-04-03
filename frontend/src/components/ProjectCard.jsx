@@ -39,8 +39,8 @@ const ProjectModal = ({ project, onClose }) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
         style={{
           background: '#F0F0D7',
@@ -258,9 +258,11 @@ const ProjectCard = ({ project, index }) => {
 
   return (
     <>
-      <div
+      <motion.div
         onClick={() => setShowModal(true)}
         className="project-card"
+        whileHover={{ y: -8, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
         style={{
           background: 'rgba(114, 125, 115, 0.04)',
           borderRadius: '16px',
@@ -444,7 +446,7 @@ const ProjectCard = ({ project, index }) => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {showModal && (

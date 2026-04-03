@@ -84,6 +84,7 @@ const PlatformCard = ({ platform, index }) => {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: false }}
       whileHover={{ y: -8, scale: 1.02 }}
+      className="platform-card"
       style={{
         background: 'rgba(114, 125, 115, 0.05)',
         borderRadius: '20px',
@@ -185,6 +186,7 @@ const CertificateCard = ({ cert, index, onClick }) => {
       transition={{ duration: 0.5, delay: index * 0.08 }}
       viewport={{ once: false }}
       onClick={onClick}
+      className="certificate-card"
       style={{
         background: 'rgba(114, 125, 115, 0.05)',
         borderRadius: '12px',

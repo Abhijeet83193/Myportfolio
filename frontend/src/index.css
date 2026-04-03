@@ -1211,8 +1211,9 @@ body {
   }
 
   /* Global section spacing reduction for mobile */
-  .view-section {
-    padding: 20px 0 !important;
-    min-height: auto !important;
-  }
+  .view-section { padding: 40px 0 !important; min-height: auto !important; }
+  .projects-grid, .platform-cards-grid, .certificate-cards-grid, .features-grid, .education-section > div, .experience-section > div { display: grid !important; grid-template-columns: 1fr !important; padding: 0 1.5rem !important; gap: 3rem !important; justify-items: center !important; width: 100% !important; }
+  .project-card, .feature-card, .education-card, .experience-card, .platform-card, .certificate-card { width: 100% !important; max-width: 340px !important; margin: 0 auto !important; }
 }
+
+.projects-grid, .platform-cards-grid, .certificate-cards-grid, .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2.5rem; width: 100%; }

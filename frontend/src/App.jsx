@@ -650,13 +650,14 @@ const Education = () => {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
-      style={{ width: '100%', maxWidth: '1000px' }}
-    >
+    <div className="education-section">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: false, amount: 0.1 }}
+        style={{ width: '100%', maxWidth: '1000px' }}
+      >
       <motion.div
         whileHover={{ y: -8, scale: 1.02 }}
         transition={{ type: 'spring', stiffness: 500, damping: 15 }}
@@ -954,20 +955,22 @@ const Education = () => {
         </motion.div>
       </motion.div>
     </motion.div>
-  );
+  </div>
+);
 };
 
 const Experience = () => {
   const techStack = ['React', 'Node.js', 'MongoDB', 'SMTP', 'Express.js'];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
-      style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
-    >
+    <div className="experience-section">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: false, amount: 0.1 }}
+        style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
+      >
       <motion.div
         whileHover={{ y: -8, scale: 1.02 }}
         transition={{ type: 'spring', stiffness: 500, damping: 15 }}
@@ -1072,7 +1075,8 @@ const Experience = () => {
         </div>
       </motion.div>
     </motion.div>
-  );
+  </div>
+);
 };
 
 const PlaceholderContent = ({ title }) => (

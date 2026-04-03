@@ -220,17 +220,17 @@ const Projects = () => {
       </div>
 
       {/* Project Cards Grid */}
-      <div className="projects-grid" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
-        gap: '2rem'
-      }}>
+      <div className="projects-grid">
         {filteredProjects.map((project, index) => (
           <motion.div
+            layout
             key={project.title}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 + index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ 
+              duration: 0.5, 
+              ease: [0.33, 1, 0.68, 1]
+            }}
           >
             <ProjectCard project={project} index={index} />
           </motion.div>
