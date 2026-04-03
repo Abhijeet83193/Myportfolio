@@ -86,7 +86,7 @@ body {
   top: 0;
   z-index: 1000;
   background: var(--bg-main);
-  padding: 0 5%;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
 }
@@ -173,7 +173,7 @@ body {
 
 /* Main Content */
 .main-content {
-  padding: 0 5%;
+  padding: 0 1.5rem;
   flex: 1;
 }
 
