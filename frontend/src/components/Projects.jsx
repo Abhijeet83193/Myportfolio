@@ -11,7 +11,7 @@ const Projects = () => {
     {
       title: 'Spotify Clone',
       description: 'A frontend UI clone of Spotify built during early learning phase to practice HTML and CSS fundamentals. This project helped in understanding layout design, responsive styling, and recreating real-world interfaces from scratch.',
-      image: '/images/spotify.jpg',
+      image: `${import.meta.env.BASE_URL}images/spotify.jpg`,
       liveUrl: 'https://abhijeet83193.github.io/Spotify-Clone/',
       githubUrl: 'https://github.com/Abhijeet83193/Spotify-Clone',
       techStack: ['HTML', 'CSS'],
@@ -23,7 +23,7 @@ const Projects = () => {
     {
       title: 'FramePro',
       description: 'A simple, elegant platform designed using HTML and CSS to streamline the process of hiring photographers for events. Whether it\'s a wedding, corporate gathering, or a personal photoshoot, FramePro connects users with skilled professionals to capture their special moments. This responsive and user-friendly interface ensures seamless navigation for users to explore and book photographers effortlessly.',
-      image: '/images/camera.jpg',
+      image: `${import.meta.env.BASE_URL}images/camera.jpg`,
       imagePosition: 'top',
       liveUrl: 'https://abhijeet83193.github.io/FramePro/',
       githubUrl: 'https://github.com/Abhijeet83193/FramePro',
@@ -36,7 +36,7 @@ const Projects = () => {
     {
       title: 'WeatherApp',
       description: 'A modern and responsive weather application built with React (Vite). The app fetches real-time weather data using the OpenWeather API and displays current weather conditions for any searched city.',
-      image: '/images/weather-app.jpg',
+      image: `${import.meta.env.BASE_URL}images/weather-app.jpg`,
       liveUrl: 'https://weatherapp-7d1e.onrender.com',
       githubUrl: 'https://github.com/Abhijeet83193/WeatherApp',
       techStack: ['React', 'JavaScript', 'HTML', 'CSS', 'OpenWeather API'],
@@ -48,7 +48,7 @@ const Projects = () => {
     {
       title: 'Hostmate',
       description: 'A modern web application for rental room listings and booking. It allows users to explore, list, and book rental rooms seamlessly. With an intuitive interface, integrated payments, and interactive maps, Hostmate simplifies the rental experience for both hosts and guests.',
-      image: '/images/hostmate.jpg',
+      image: `${import.meta.env.BASE_URL}images/hostmate.jpg`,
       imagePosition: 'bottom',
       liveUrl: 'https://hostmate-6org.onrender.com/',
       githubUrl: 'https://github.com/Abhijeet83193/Hostmate',
@@ -61,7 +61,7 @@ const Projects = () => {
     {
       title: 'HostelResolve',
       description: 'A hostel complaint management system that increases transparency between wardens and students. If complaints remain unresolved, the system automatically escalates them to higher authorities via email.',
-      image: '/images/hostelresolve.jpg',
+      image: `${import.meta.env.BASE_URL}images/hostelresolve.jpg`,
       liveUrl: 'https://hostelresolve.onrender.com/',
       githubUrl: 'https://github.com/Abhijeet83193/HostelResolve',
       techStack: ['React', 'Node.js', 'Express.js', 'MongoDB', 'SMTP', 'Cloudinary', 'JavaScript', 'HTML', 'CSS', 'Framer Motion'],
@@ -73,7 +73,7 @@ const Projects = () => {
     {
       title: 'My Portfolio',
       description: 'A personal portfolio website showcasing my skills, projects, education, and experience as a Full Stack Developer. Built with React, Framer Motion, and Lottie animations for a modern, interactive experience with smooth scrolling, animated sections, and dynamic project filtering.',
-      image: '/images/my-portfolio.jpg',
+      image: `${import.meta.env.BASE_URL}images/my-portfolio.jpg`,
       imagePosition: 'top',
       liveUrl: '#home',
       isMe: true,

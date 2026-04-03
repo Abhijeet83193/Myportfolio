@@ -7,7 +7,7 @@ const codingPlatforms = [
     name: 'LeetCode',
     username: 'Avdx23e',
     url: 'https://leetcode.com/u/Avdx23e/',
-    logo: '/certificates/leetcode.png',
+    logo: `${import.meta.env.BASE_URL}certificates/leetcode.png`,
     color: '#FFA116',
     bgGradient: 'linear-gradient(135deg, #FFA116 0%, #FFC107 100%)'
   },
@@ -15,7 +15,7 @@ const codingPlatforms = [
     name: 'CodeChef',
     username: 'abhi_14avd',
     url: 'https://www.codechef.com/users/abhi_14avd',
-    logo: '/certificates/logo.png',
+    logo: `${import.meta.env.BASE_URL}certificates/logo.png`,
     color: '#5B4638',
     bgGradient: 'linear-gradient(135deg, #5B4638 0%, #8B7355 100%)'
   },
@@ -23,7 +23,7 @@ const codingPlatforms = [
     name: 'Codeforces',
     username: 'abhi_14avd',
     url: 'https://codeforces.com/profile/abhi_14avd',
-    logo: '/certificates/free-code-forces-logo-icon-svg-download-png-2944796.png',
+    logo: `${import.meta.env.BASE_URL}certificates/free-code-forces-logo-icon-svg-download-png-2944796.png`,
     color: '#318CE7',
     bgGradient: 'linear-gradient(135deg, #318CE7 0%, #5DADE2 100%)'
   }
@@ -34,7 +34,7 @@ const certificates = [
     id: 'python-training',
     title: 'Certificate for the Completion of Python 3.4.3 Training',
     organization: 'EduPyramids, SINE, IIT Bombay',
-    orgLogo: '/certificates/IIT-bombay-Indian-Institute-of-Technology-Bombay.png',
+    orgLogo: `${import.meta.env.BASE_URL}certificates/IIT-bombay-Indian-Institute-of-Technology-Bombay.png`,
     credentialId: '4023174R43',
     issuedDate: 'November 2025',
     year: 2025,
@@ -45,7 +45,7 @@ const certificates = [
     id: 'certificate-b3axfxve3ji7',
     title: 'Certificate of Completion: AI Fluency Framework & Foundations',
     organization: 'Anthropic',
-    orgLogo: '/certificates/anthropic-Picsart-BackgroundRemover.png',
+    orgLogo: `${import.meta.env.BASE_URL}certificates/anthropic-Picsart-BackgroundRemover.png`,
     credentialId: 'b3axfxve3ji7',
     issuedDate: 'March 2026',
     year: 2026,
@@ -56,7 +56,7 @@ const certificates = [
     id: 'dsa-apna-college',
     title: 'Certificate of Completion - DSA in Java',
     organization: 'Apna College',
-    orgLogo: '/certificates/apna college.png',
+    orgLogo: `${import.meta.env.BASE_URL}certificates/apna college.png`,
     credentialId: '662fa0f98bc9344703016d06',
     issuedDate: 'June 2024',
     year: 2024,
@@ -67,7 +67,7 @@ const certificates = [
     id: 'full-stack',
     title: 'Certificate of Completion - Full Stack Web Development',
     organization: 'Apna College',
-    orgLogo: '/certificates/apna college.png',
+    orgLogo: `${import.meta.env.BASE_URL}certificates/apna college.png`,
     credentialId: '66b4d31180c9fe2a87035972',
     issuedDate: 'January 2026',
     year: 2026,
@@ -439,7 +439,7 @@ const CertificateModal = ({ cert, onClose }) => {
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <a
-            href={`/certificates/${encodeURIComponent(cert.file)}`}
+            href={`${import.meta.env.BASE_URL}certificates/${encodeURIComponent(cert.file)}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
