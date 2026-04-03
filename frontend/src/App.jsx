@@ -144,7 +144,8 @@ const Terminal = () => {
 
   const fetchCommits = async () => {
     try {
-      // Use the events endpoint to get all public activity directly
+      setLoading(true);
+      // Step 1: Find the most recently active public repository across all activity
       const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=15`);
       
       if (!response.ok) {
@@ -154,43 +155,43 @@ const Terminal = () => {
       
       const events = await response.json();
       
-      // Filter only PushEvents (which contain commits)
-      const pushEvents = events.filter(e => e.type === 'PushEvent');
+      // Find the first PushEvent to identify the active repo
+      const latestPushEvent = events.find(e => e.type === 'PushEvent');
       
-      if (pushEvents.length === 0) {
+      if (!latestPushEvent) {
         setError('No recent public git activity found');
         setLoading(false);
         return;
       }
 
-      // Extract commits from push events
-      const allCommits = [];
-      pushEvents.forEach(event => {
-        const repoName = event.repo.name.split('/')[1];
-        if (event.payload && event.payload.commits) {
-          event.payload.commits.forEach(commit => {
-            allCommits.push({
-              id: commit.sha,
-              sha: commit.sha.substring(0, 7),
-              message: commit.message.split('\n')[0],
-              author: commit.author?.name || 'Abhijeet',
-              date: new Date(event.created_at),
-              url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-              repo: repoName,
-              type: 'commit'
-            });
-          });
-        }
-      });
+      const activeRepoPath = latestPushEvent.repo.name; // Full path like "User/Repo"
+      const repoShortName = activeRepoPath.split('/')[1];
 
-      // Limit to last 10 and reverse for terminal style (newest at bottom)
-      const finalCommits = allCommits.slice(0, 10).reverse();
+      // Step 2: Fetch actual 10 commits for THIS repo
+      const commitsResponse = await fetch(`https://api.github.com/repos/${activeRepoPath}/commits?per_page=10`);
       
-      if (finalCommits.length > 0) {
-        finalCommits[finalCommits.length - 1].type = 'active';
+      if (!commitsResponse.ok) throw new Error('Commits fetch failed');
+      const commitsData = await commitsResponse.json();
+
+      const allCommits = commitsData.map(item => ({
+        id: item.sha,
+        sha: item.sha.substring(0, 7),
+        message: item.commit.message.split('\n')[0],
+        author: item.commit.author?.name || 'Abhijeet',
+        date: new Date(item.commit.author?.date),
+        url: item.html_url,
+        repo: repoShortName,
+        type: 'commit'
+      }));
+
+      // Reverse so newest is at the bottom (terminal style)
+      const latestCommits = allCommits.reverse();
+      
+      if (latestCommits.length > 0) {
+        latestCommits[latestCommits.length - 1].type = 'active';
       }
 
-      setCommits(finalCommits);
+      setCommits(latestCommits);
       setLoading(false);
       setError(null);
     } catch (err) {
