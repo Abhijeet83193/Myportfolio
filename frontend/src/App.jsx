@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Briefcase,
@@ -17,7 +17,9 @@ import {
   Rocket,
   Cpu,
   Award,
-  Globe
+  Globe,
+  Menu,
+  X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -707,6 +709,7 @@ const Education = () => {
           transition: 'all 0.15s ease-out',
           cursor: 'pointer'
         }}
+        className="education-card"
         onMouseEnter={(e) => {
           e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
           e.currentTarget.style.borderColor = 'var(--primary)';
@@ -742,8 +745,8 @@ const Education = () => {
             />
           </motion.div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <GraduationCap size={28} /> B.Tech in Computer Science
+            <h3 className="education-title" style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem' }}>
+              B.Tech in Computer Science
             </h3>
             <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
               Medicaps University, Indore, Madhya Pradesh, India
@@ -777,6 +780,7 @@ const Education = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: false }}
+                className="coursework-tag"
                 style={{
                   padding: '0.5rem 1rem',
                   background: 'rgba(114, 125, 115, 0.08)',
@@ -839,7 +843,7 @@ const Education = () => {
             </motion.div>
             <div style={{ flex: 1 }}>
               <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <GraduationCap size={28} /> High School
+                High School
               </h3>
               <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
                 Govt LBS Hindi H S School, Pandhurna, Chhindwara, Madhya Pradesh, India
@@ -939,7 +943,7 @@ const Education = () => {
             </motion.div>
             <div style={{ flex: 1 }}>
               <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <GraduationCap size={28} /> Primary & Middle School
+                Primary & Middle School
               </h3>
               <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
                 New Sunflower English Medium School, Pandhurna, Madhya Pradesh, India
@@ -1151,6 +1155,7 @@ const MainLanding = ({ homeKey }) => {
 
 const Header = ({ homeKey, setHomeKey }) => {
   const [activePath, setActivePath] = useState(window.location.pathname);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isScrollingByNav = useRef(false);
 
   useEffect(() => {
@@ -1187,12 +1192,13 @@ const Header = ({ homeKey, setHomeKey }) => {
     { label: 'Experience', path: '/experience', targetId: 'experience' },
     { label: 'Projects', path: '/projects', targetId: 'projects' },
     { label: 'Skills', path: '/skills', targetId: 'skills' },
-    { label: 'Achievements', path: '/achievements', targetId: 'certifications' },
+    { label: 'Achievements', path: '/achievements', targetId: 'achievements' },
     { label: 'Contact Me', path: '/contact', targetId: 'contact' }
   ];
 
   const handleNavClick = (e, item) => {
     e.preventDefault();
+    setMobileMenuOpen(false);
     isScrollingByNav.current = true;
     const element = document.getElementById(item.targetId);
     if (element) {
@@ -1220,24 +1226,57 @@ const Header = ({ homeKey, setHomeKey }) => {
           window.history.pushState(null, '', '/');
           setActivePath('/');
           setHomeKey(prev => prev + 1);
+          setMobileMenuOpen(false);
           setTimeout(() => { isScrollingByNav.current = false; }, 1000);
         }} style={{ cursor: 'pointer' }}>
           <h1>Abhijeet Dhokne</h1>
         </div>
         <nav className="header-actions">
-          <div className="action-buttons">
+          <div className="action-buttons desktop-nav">
             {navItems.map((item) => (
               <a
                 key={item.path}
                 href={item.path}
                 onClick={(e) => handleNavClick(e, item)}
-                className={activePath === item.path ? "nav-link-custom active" : "nav-link-custom"}
+                className={`nav-link-custom ${activePath === item.path ? 'active' : ''}`}
               >
                 {item.label}
               </a>
             ))}
           </div>
+          <button
+            className="mobile-menu-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{
+              display: 'none',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              color: 'var(--army-olive)'
+            }}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </nav>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu-overlay ${mobileMenuOpen ? 'open' : ''}`} onClick={() => setMobileMenuOpen(false)} />
+
+      {/* Mobile Menu */}
+      <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        {navItems.map((item, index) => (
+          <a
+            key={item.path}
+            href={item.path}
+            onClick={(e) => handleNavClick(e, item)}
+            className={`mobile-nav-link ${activePath === item.path ? 'active' : ''}`}
+            style={{ animationDelay: `${index * 0.05}s` }}
+          >
+            {item.label}
+          </a>
+        ))}
       </div>
     </header>
   );

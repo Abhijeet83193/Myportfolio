@@ -55,7 +55,7 @@ const Contact = () => {
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
       {/* Main Contact Grid */}
-      <div style={{
+      <div className="contact-grid" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '3rem',
@@ -243,7 +243,7 @@ const Contact = () => {
         </div>
 
         {/* Right: Map */}
-        <div style={{
+        <div className="contact-map-wrapper" style={{
           borderRadius: '16px',
           overflow: 'hidden',
           border: '1px solid var(--border-soft)',

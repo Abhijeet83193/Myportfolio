@@ -220,7 +220,7 @@ const Projects = () => {
       </div>
 
       {/* Project Cards Grid */}
-      <div style={{
+      <div className="projects-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
         gap: '2rem'

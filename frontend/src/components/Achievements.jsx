@@ -502,11 +502,12 @@ const Achievements = () => {
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
       {/* Tab Switcher */}
-      <div style={{
+      <div className="achievements-tab-switcher" style={{
         display: 'flex',
         justifyContent: 'center',
         gap: '1rem',
-        marginBottom: '3rem'
+        marginBottom: '3rem',
+        flexWrap: 'wrap'
       }}>
         <motion.button
           onClick={() => setActiveTab('platforms')}
@@ -561,7 +562,7 @@ const Achievements = () => {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
           >
-            <div style={{
+            <div className="platform-cards-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
               gap: '1.5rem'
@@ -579,7 +580,7 @@ const Achievements = () => {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
           >
-            <div style={{
+            <div className="certificate-cards-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
               gap: '1.5rem'
