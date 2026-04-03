@@ -248,13 +248,13 @@ const Contact = () => {
           overflow: 'hidden',
           border: '1px solid var(--border-soft)',
           height: '100%',
-          minHeight: '450px'
+          minHeight: '550px' // Increased from 450px
         }}>
           <iframe
             src="https://maps.google.com/maps?q=RAU,+Indore,+Madhya+Pradesh&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="100%"
-            style={{ border: 0, minHeight: '450px' }}
+            style={{ border: 0, minHeight: '550px' }} // Increased from 450px
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

@@ -1283,6 +1283,39 @@ const Header = ({ homeKey, setHomeKey }) => {
 };
 
 
+const Footer = () => (
+  <footer className="site-footer">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true }}
+      whileHover={{ 
+        y: -15,
+        rotate: -1,
+        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.4), 0 0 0 2px #4a6fa5'
+      }}
+      className="quote-card"
+    >
+      <div className="quote-content">
+        <p className="quote-text">
+          You can sleep when you’re dead.
+        </p>
+
+        <p className="quote-author">
+          ~Max Verstappen
+        </p>
+      </div>
+    </motion.div>
+
+    <div className="copyright-notice">
+      <p className="copyright-text">
+        &copy; {new Date().getFullYear()} Abhijeet Dhokne
+      </p>
+    </div>
+  </footer>
+);
+
 function App() {
   const [homeKey, setHomeKey] = useState(0);
   return (
@@ -1294,6 +1327,7 @@ function App() {
             <Route path="*" element={<MainLanding homeKey={homeKey} />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );
