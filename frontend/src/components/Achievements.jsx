@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Award, FileText, Code, X, Trophy } from 'lucide-react';
 
@@ -76,13 +76,13 @@ const certificates = [
   }
 ];
 
-const PlatformCard = ({ platform, index }) => {
+const PlatformCard = memo(({ platform, index }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      viewport={{ once: false }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
       whileHover={{ y: -8, scale: 1.02 }}
       className="platform-card"
       style={{
@@ -91,7 +91,7 @@ const PlatformCard = ({ platform, index }) => {
         border: '1px solid var(--border-soft)',
         padding: '2rem',
         cursor: 'pointer',
-        transition: 'all 0.3s ease',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
         position: 'relative',
         overflow: 'hidden'
       }}
@@ -116,8 +116,6 @@ const PlatformCard = ({ platform, index }) => {
           opacity: 0.08,
           filter: 'blur(25px)'
         }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 3, repeat: Infinity }}
       />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -161,7 +159,7 @@ const PlatformCard = ({ platform, index }) => {
           textDecoration: 'none',
           fontSize: '0.9rem',
           fontWeight: '600',
-          transition: 'all 0.2s ease'
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-2px)';
@@ -176,15 +174,15 @@ const PlatformCard = ({ platform, index }) => {
       </a>
     </motion.div>
   );
-};
+});
 
-const CertificateCard = ({ cert, index, onClick }) => {
+const CertificateCard = memo(({ cert, index, onClick }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      viewport={{ once: false }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
       onClick={onClick}
       className="certificate-card"
       style={{
@@ -193,7 +191,7 @@ const CertificateCard = ({ cert, index, onClick }) => {
         border: '1px solid var(--border-soft)',
         padding: '1.5rem',
         cursor: 'pointer',
-        transition: 'all 0.3s ease',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
         position: 'relative',
         overflow: 'hidden',
         display: 'flex',
@@ -275,14 +273,14 @@ const CertificateCard = ({ cert, index, onClick }) => {
           borderRadius: '8px',
           fontSize: '0.85rem',
           fontWeight: '600',
-          transition: 'all 0.2s ease'
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
         }}
       >
         <FileText size={14} /> View Details
       </div>
     </motion.div>
   );
-};
+});
 
 const CertificateModal = ({ cert, onClose }) => {
   React.useEffect(() => {
@@ -354,7 +352,7 @@ const CertificateModal = ({ cert, onClose }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.2s ease'
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'var(--army-olive)';
@@ -457,7 +455,7 @@ const CertificateModal = ({ cert, onClose }) => {
               textDecoration: 'none',
               fontSize: '0.9rem',
               fontWeight: '600',
-              transition: 'all 0.2s ease'
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--primary)';
@@ -500,7 +498,7 @@ const Achievements = () => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
+      viewport={{ once: true, amount: 0.15 }}
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
       {/* Tab Switcher */}
@@ -527,7 +525,7 @@ const Achievements = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            transition: 'all 0.2s ease'
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
           }}
         >
           <Code size={18} /> Coding Profiles
@@ -548,7 +546,7 @@ const Achievements = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            transition: 'all 0.2s ease'
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
           }}
         >
           <Award size={18} /> Certificates
@@ -604,4 +602,4 @@ const Achievements = () => {
   );
 };
 
-export default Achievements;
+export default memo(Achievements);

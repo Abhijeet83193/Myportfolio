@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, MapPin, Phone, ExternalLink, Globe } from 'lucide-react';
 
@@ -45,13 +45,13 @@ const socialLinks = [
   }
 ];
 
-const Contact = () => {
+const Contact = memo(() => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
+      viewport={{ once: true, amount: 0.15 }}
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
       {/* Main Contact Grid */}
@@ -82,6 +82,7 @@ const Contact = () => {
                 src={`${import.meta.env.BASE_URL}images/my-profile.jpg`}
                 alt="Abhijeet Dhokne"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                loading="lazy"
               />
             </div>
             <div>
@@ -131,7 +132,7 @@ const Contact = () => {
                   borderRadius: '12px',
                   border: '1px solid var(--border-soft)',
                   textDecoration: 'none',
-                  transition: 'all 0.2s ease'
+                  transition: 'border-color 0.2s ease, background-color 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = 'var(--army-olive)';
@@ -152,7 +153,7 @@ const Contact = () => {
                   justifyContent: 'center',
                   color: '#EA4335'
                 }}>
-                <img src={`${import.meta.env.BASE_URL}images/google_mail_gmail_logo_icon_159346.png`} alt="Gmail" style={{ width: '18px', height: '18px' }} />
+                <img src={`${import.meta.env.BASE_URL}images/google_mail_gmail_logo_icon_159346.png`} alt="Gmail" style={{ width: '18px', height: '18px' }} loading="lazy" />
                 </div>
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Email</p>
@@ -220,7 +221,7 @@ const Contact = () => {
                     borderRadius: '12px',
                     border: '1px solid var(--border-soft)',
                     textDecoration: 'none',
-                    transition: 'all 0.2s ease'
+                    transition: 'border-color 0.2s ease, background-color 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = link.color;
@@ -251,7 +252,7 @@ const Contact = () => {
           minHeight: '550px' // Increased from 450px
         }}>
           <iframe
-            src="https://maps.google.com/maps?q=RAU,+Indore,+Madhya+Pradesh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=RAU,+Indore,+Madhya+Pradesh&t=k&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0, minHeight: '550px' }} // Increased from 450px
@@ -264,6 +265,6 @@ const Contact = () => {
       </div>
     </motion.div>
   );
-};
+});
 
-export default Contact;
+export default memo(Contact);

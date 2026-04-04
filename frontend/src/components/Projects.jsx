@@ -1,13 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Rocket, ArrowUpDown } from 'lucide-react';
+import React, { useState, useMemo, memo } from 'react';
+import { motion } from 'framer-motion';
+import { Code2, ArrowUpDown } from 'lucide-react';
 import ProjectCard from './ProjectCard';
 
-const Projects = () => {
-  const [sortBy, setSortBy] = useState('all');
-  const [yearInput, setYearInput] = useState('');
-
-  const projects = [
+const projects = [
     {
       title: 'Spotify Clone',
       description: 'A frontend UI clone of Spotify built during early learning phase to practice HTML and CSS fundamentals. This project helped in understanding layout design, responsive styling, and recreating real-world interfaces from scratch.',
@@ -86,6 +82,10 @@ const Projects = () => {
     }
   ];
 
+const Projects = () => {
+  const [sortBy, setSortBy] = useState('all');
+  const [yearInput, setYearInput] = useState('');
+
   const years = useMemo(() => {
     const uniqueYears = [...new Set(projects.map(p => p.year))].sort((a, b) => b - a);
     return uniqueYears;
@@ -139,6 +139,10 @@ const Projects = () => {
 
   return (
     <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
       {/* Sort Filter Bar */}
@@ -162,11 +166,9 @@ const Projects = () => {
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {['all', 'latest', 'oldest'].map((key) => (
-            <motion.button
+            <button
               key={key}
               onClick={() => handleSortChange(key)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               style={{
                 padding: '8px 18px',
                 borderRadius: '20px',
@@ -177,23 +179,29 @@ const Projects = () => {
                 fontWeight: '600',
                 cursor: 'pointer',
                 textTransform: 'capitalize',
-                transition: 'all 0.2s ease'
+                transition: 'background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease',
+                transform: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               {key}
-            </motion.button>
+            </button>
           ))}
         </div>
         {years.length > 0 && (
           <div style={{ position: 'relative' }}>
-            <motion.input
+            <input
               type="text"
               inputMode="numeric"
               maxLength={4}
               placeholder="Type year..."
               value={yearInput}
               onChange={handleYearInput}
-              whileHover={{ scale: 1.02 }}
               style={{
                 padding: '8px 14px',
                 borderRadius: '20px',
@@ -212,7 +220,14 @@ const Projects = () => {
                 outline: 'none',
                 width: '120px',
                 textAlign: 'center',
-                letterSpacing: '2px'
+                letterSpacing: '2px',
+                transition: 'transform 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             />
           </div>
@@ -223,13 +238,14 @@ const Projects = () => {
       <div className="projects-grid">
         {filteredProjects.map((project, index) => (
           <motion.div
-            layout
             key={project.title}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.5, 
-              ease: [0.33, 1, 0.68, 1]
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.08,
+              ease: [0.16, 1, 0.3, 1]
             }}
           >
             <ProjectCard project={project} index={index} />
@@ -251,4 +267,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default memo(Projects);

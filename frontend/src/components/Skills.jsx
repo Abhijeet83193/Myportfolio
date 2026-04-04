@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
@@ -151,15 +151,15 @@ const bentoCards = [
   }
 ];
 
-const SkillCard = ({ card, index }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+const SkillCard = memo(({ card, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.5, delay: index * 0.06, ease: 'easeOut' }}
-      viewport={{ once: false, amount: 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
       className={`bento-card ${card.span === 'wide' ? 'bento-wide' : ''}`}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
@@ -171,7 +171,7 @@ const SkillCard = ({ card, index }) => {
         border: '1px solid var(--border-soft)',
         padding: card.span === 'wide' ? '1.75rem' : '1.25rem',
         cursor: 'pointer',
-        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease'
       }}
       whileHover={{
         y: -6,
@@ -259,7 +259,7 @@ const SkillCard = ({ card, index }) => {
       </motion.p>
     </motion.div>
   );
-};
+});
 
 const Skills = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -276,10 +276,10 @@ const Skills = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
+      transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
       className="skills-section"
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
@@ -307,7 +307,7 @@ const Skills = () => {
               fontSize: '0.85rem',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease'
             }}
           >
             {cat}
@@ -326,4 +326,4 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+export default memo(Skills);

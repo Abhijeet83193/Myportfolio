@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -19,9 +20,11 @@ import {
   Award,
   Globe,
   Menu,
-  X
+  X,
+  School,
+  MapPin,
+  Calendar
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
@@ -42,14 +45,117 @@ const XIcon = ({ size = 20, color = "currentColor" }) => (
 );
 
 // --- Generic Section Wrapper ---
-const Section = ({ id, children, title, subtitle, description }) => {
+const ModernModal = ({ isOpen, onClose, title, subtitle, children, icon }) => {
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(10px)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem'
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#F0F0D7',
+              borderRadius: '24px',
+              border: '1px solid var(--border-soft)',
+              padding: '2.5rem',
+              maxWidth: '700px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              position: 'relative',
+              boxShadow: '0 40px 100px rgba(0, 0, 0, 0.4)'
+            }}
+          >
+            <button
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: '1.5rem',
+                right: '1.5rem',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                border: 'none',
+                background: 'rgba(53, 66, 48, 0.1)',
+                color: 'var(--army-olive)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--army-olive)'; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(53, 66, 48, 0.1)'; e.currentTarget.style.color = 'var(--army-olive)'; }}
+            >
+              <X size={20} />
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem' }}>
+              {icon && (
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '14px',
+                  background: 'rgba(53, 66, 48, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2rem'
+                }}>
+                  {icon}
+                </div>
+              )}
+              <div>
+                <h2 style={{ fontSize: '1.8rem', color: 'var(--army-olive)', fontWeight: '800', margin: 0 }}>{title}</h2>
+                {subtitle && <p style={{ fontSize: '1rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', fontWeight: '500' }}>{subtitle}</p>}
+              </div>
+            </div>
+
+            <div className="modal-content-rich" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-main)' }}>
+              {children}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const Section = ({ id, children, title, subtitle, description, once = true }) => {
   return (
     <motion.section
       id={id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: false, amount: 0.1 }}
+      initial={{ opacity: 0, y: 60, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.8, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: once, amount: 0.05 }}
       className="view-section"
       style={{
         minHeight: id === 'home' ? 'auto' : '65vh',
@@ -63,10 +169,10 @@ const Section = ({ id, children, title, subtitle, description }) => {
         }}>
           <motion.h2
             className="section-title"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: once }}
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: '3rem',
@@ -81,10 +187,10 @@ const Section = ({ id, children, title, subtitle, description }) => {
 
           {subtitle && (
             <motion.p
-              initial={{ opacity: 0, scaleX: 0 }}
+              initial={{ opacity: 0, scaleX: 0, transformOrigin: "center" }}
               whileInView={{ opacity: 1, scaleX: 1 }}
-              transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: once }}
               style={{
                 fontSize: '0.8rem',
                 color: 'var(--primary)',
@@ -101,8 +207,8 @@ const Section = ({ id, children, title, subtitle, description }) => {
           <motion.div
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
-            transition={{ delay: 0.45, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: once }}
             style={{
               width: '50px',
               height: '2px',
@@ -115,8 +221,8 @@ const Section = ({ id, children, title, subtitle, description }) => {
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.55, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              viewport={{ once: true }}
+              transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: once }}
               style={{
                 fontSize: '1.05rem',
                 lineHeight: '1.7',
@@ -137,7 +243,7 @@ const Section = ({ id, children, title, subtitle, description }) => {
 
 const GITHUB_USERNAME = 'Abhijeet83193';
 
-const Terminal = () => {
+const Terminal = memo(() => {
   const [commits, setCommits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -145,31 +251,26 @@ const Terminal = () => {
   const fetchCommits = async () => {
     try {
       setLoading(true);
-      // Step 1: Find the most recently active public repository across all activity
       const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=15`);
-      
+
       if (!response.ok) {
         if (response.status === 403) throw new Error('API Rate Limit exceeded (try again later)');
         throw new Error('Activity fetch failed');
       }
-      
+
       const events = await response.json();
-      
-      // Find the first PushEvent to identify the active repo
       const latestPushEvent = events.find(e => e.type === 'PushEvent');
-      
+
       if (!latestPushEvent) {
         setError('No recent public git activity found');
         setLoading(false);
         return;
       }
 
-      const activeRepoPath = latestPushEvent.repo.name; // Full path like "User/Repo"
+      const activeRepoPath = latestPushEvent.repo.name;
       const repoShortName = activeRepoPath.split('/')[1];
 
-      // Step 2: Fetch actual 10 commits for THIS repo
       const commitsResponse = await fetch(`https://api.github.com/repos/${activeRepoPath}/commits?per_page=10`);
-      
       if (!commitsResponse.ok) throw new Error('Commits fetch failed');
       const commitsData = await commitsResponse.json();
 
@@ -184,9 +285,7 @@ const Terminal = () => {
         type: 'commit'
       }));
 
-      // Reverse so newest is at the bottom (terminal style)
       const latestCommits = allCommits.reverse();
-      
       if (latestCommits.length > 0) {
         latestCommits[latestCommits.length - 1].type = 'active';
       }
@@ -203,7 +302,6 @@ const Terminal = () => {
 
   useEffect(() => {
     fetchCommits();
-    // Refresh every 2 minutes
     const interval = setInterval(fetchCommits, 120000);
     return () => clearInterval(interval);
   }, []);
@@ -260,21 +358,6 @@ const Terminal = () => {
         scrollbarWidth: 'thin',
         scrollbarColor: '#4a4a4a #1e1e1e'
       }}
-        css={`{
-        &::-webkit-scrollbar {
-          width: 6px;
-        }
-        &::-webkit-scrollbar-track {
-          background: #1e1e1e;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: #4a4a4a;
-          border-radius: 3px;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: #5a5a5a;
-        }
-      }`}
       >
         <div style={{ color: '#27c93f', marginBottom: '16px', fontSize: '14px' }}>
           <span style={{ color: '#5af78e' }}>➜</span>
@@ -335,10 +418,14 @@ const Terminal = () => {
           </motion.div>
         ))}
 
+        {!loading && !error && commits.length === 0 && (
+          <div style={{ color: '#6a6a6a', fontSize: '13px', textAlign: 'center', padding: '40px 0' }}>
+            No recent commits to display.
+          </div>
+        )}
+
         {!loading && !error && (
-          <motion.div
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 1, repeat: Infinity }}
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -350,15 +437,15 @@ const Terminal = () => {
           >
             <span style={{ color: '#5af78e' }}>➜</span>
             <span style={{ color: '#5af78e' }}>~</span>
-            <span style={{ width: '8px', height: '18px', background: '#5af78e' }}></span>
-          </motion.div>
+            <span className="terminal-cursor" style={{ width: '8px', height: '18px', background: '#5af78e' }}></span>
+          </div>
         )}
       </div>
     </div>
   );
-};
+});
 
-const TypewriterText = ({ text, delay = 50, className, startDelay = 0, resetKey = 0 }) => {
+const TypewriterText = memo(({ text, delay = 50, className, startDelay = 0, resetKey = 0 }) => {
   const [displayed, setDisplayed] = useState('');
 
   useEffect(() => {
@@ -382,66 +469,115 @@ const TypewriterText = ({ text, delay = 50, className, startDelay = 0, resetKey 
   }, [text, delay, startDelay, resetKey]);
 
   return <span className={className}>{displayed}</span>;
+});
+
+const Quote = ({ homeKey, scrollContainerRef }) => {
+  const { scrollYProgress } = useScroll({
+    container: scrollContainerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const rawY1 = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const rawY2 = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  
+  const y1 = useSpring(rawY1, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  const y2 = useSpring(rawY2, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  return (
+    <div className="hero-section">
+      <div className="hero-grid">
+        {/* LEFT SIDE - Robot Mascot + Greeting */}
+        <motion.div
+          className="hero-left"
+          key={`hero-left-${homeKey}`}
+          initial={{ opacity: 0, x: -60, scale: 0.9 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          style={{ y: y1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <motion.div
+            className="robot-container"
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <DotLottieReact
+              src="https://lottie.host/39d6c4e7-3644-4c21-a229-39dcf70032ae/gAZ9iS1rgE.lottie"
+              loop
+              autoplay
+              className="robot-animation"
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* RIGHT SIDE - Intro Text + Terminal */}
+        <motion.div
+          className="hero-right"
+          key={`hero-right-${homeKey}`}
+          initial={{ opacity: 0, x: 60, scale: 0.9 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          style={{ y: y2 }}
+          transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Top: Main Intro Text */}
+          <div className="hero-intro">
+            <motion.h1
+              key={`hero-name-${homeKey}`}
+              className="hero-name"
+              initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Hey, I'm <span className="highlight">GOJO</span> 👋
+            </motion.h1>
+            <motion.p
+              key={`hero-tagline-${homeKey}`}
+              className="hero-tagline"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <TypewriterText text="Loading awesome experiences..." delay={60} startDelay={500} resetKey={homeKey} />
+            </motion.p>
+          </div>
+
+          {/* Bottom: Terminal */}
+          <motion.div
+            className="hero-terminal-wrapper"
+            key={`hero-terminal-${homeKey}`}
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Terminal />
+          </motion.div>
+        </motion.div>
+      </div>
+    </div>
+  );
 };
 
-const Quote = ({ homeKey }) => (
-  <div className="hero-section">
-    <div className="hero-grid">
-      {/* LEFT SIDE - Robot Mascot + Greeting */}
-      <motion.div
-        className="hero-left"
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="robot-container">
-          <DotLottieReact
-            src="https://lottie.host/39d6c4e7-3644-4c21-a229-39dcf70032ae/gAZ9iS1rgE.lottie"
-            loop
-            autoplay
-            className="robot-animation"
-          />
-        </div>
-      </motion.div>
+const cardTransition = {
+  type: "spring",
+  stiffness: 100,
+  damping: 20
+};
 
-      {/* RIGHT SIDE - Intro Text + Terminal */}
-      <motion.div
-        className="hero-right"
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        {/* Top: Main Intro Text */}
-        <div className="hero-intro">
-          <h1 className="hero-name">Hey, I'm <span className="highlight">GOJO</span> 👋</h1>
-          <p className="hero-tagline">
-            <TypewriterText text="Loading awesome experiences..." delay={60} startDelay={500} resetKey={homeKey} />
-          </p>
-        </div>
-
-        {/* Bottom: Terminal */}
-        <motion.div
-          className="hero-terminal-wrapper"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-        >
-          <Terminal />
-        </motion.div>
-      </motion.div>
-    </div>
-  </div>
-);
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { 
+      duration: 0.8, 
+      ease: [0.16, 1, 0.3, 1] 
+    } 
+  }
+};
 
 const textVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
 };
 
 const containerVariants = {
@@ -449,66 +585,323 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2
+      staggerChildren: 0.12,
+      delayChildren: 0.1
     }
   }
 };
 
-const Intro = () => (
-  <div className="two-col-layout">
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.3 }}
-      className="content-side"
-    >
-      <motion.h1 variants={textVariants} className="hero-title">Abhijeet Dhokne</motion.h1>
+const EducationCard = ({ edu, index, scrollContainerRef }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const cardRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    container: scrollContainerRef,
+    offset: ["start end", "end start"]
+  });
 
-      <motion.h3 variants={textVariants} style={{ fontSize: '1.4rem', color: 'var(--primary)', fontWeight: '600', marginBottom: '1.2rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '0.8rem' }}>
-        Full Stack Web Developer
-      </motion.h3>
+  const rawY = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? 30 : -30, index % 2 === 0 ? -30 : 30]);
+  const y = useSpring(rawY, { stiffness: 100, damping: 30 });
 
-      <motion.p variants={textVariants} className="hero-description" style={{ fontSize: '1.15rem', lineHeight: '1.7', color: 'var(--text-main)', marginBottom: '1.2rem', maxWidth: '600px' }}>
-        I am a Computer Science student and a passionate developer focused on building efficient, scalable systems and engaging digital experiences.
-      </motion.p>
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
-      <motion.p variants={textVariants} style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-muted)', maxWidth: '600px' }}>
-        My expertise lies in modern web architectures—particularly <strong>React</strong>, <strong>Node.js</strong>, and <strong>MongoDB</strong>.
-        I love transforming creative ideas into optimized real-world applications while continuously sharpening my problem-solving skills through Data Structures and Algorithms.
-      </motion.p>
+  const handleMouseMove = (e) => {
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const yFromTop = e.clientY - rect.top;
+    setMousePos({ 
+      x: ((x / rect.width) - 0.5) * 20, // max 10deg rotation
+      y: ((yFromTop / rect.height) - 0.5) * -20 
+    });
+  };
 
-      <div variants={textVariants} className="social-links" style={{ marginBottom: '2rem', marginTop: '2rem' }}>
-        <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
-        <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
-        <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
-        <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="social-icon-box google"><Globe size={20} /></a>
+  return (
+    <>
+      <motion.div
+        ref={cardRef}
+        variants={cardVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.1 }}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setMousePos({ x: 0, y: 0 });
+        }}
+        style={{ 
+          y, 
+          cursor: 'pointer',
+          perspective: 1200,
+          transformStyle: 'preserve-3d',
+          rotateX: isHovered ? mousePos.y : 0,
+          rotateY: isHovered ? mousePos.x : 0,
+          transition: isHovered ? 'none' : 'all 0.5s ease-out'
+        }}
+        whileHover={{ 
+          y: -25, 
+          scale: 1.05,
+          boxShadow: '0 50px 100px rgba(53, 66, 48, 0.3)',
+          borderColor: 'var(--primary)'
+        }}
+        onClick={() => setIsModalOpen(true)}
+        className="education-card"
+      >
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: isHovered 
+            ? `radial-gradient(circle at ${50 + (mousePos.x * 2)}% ${50 + (mousePos.y * -2)}%, rgba(114, 125, 115, 0.15), transparent)`
+            : 'none',
+          borderRadius: 'inherit',
+          pointerEvents: 'none',
+          zIndex: 0
+        }} />
+        <motion.div 
+          className="card-accent" 
+          animate={{ height: isHovered ? '8px' : '4px' }}
+        />
+        <div className="card-header">
+          <motion.div 
+            className="icon-container"
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            {edu.type === 'college' ? <School size={24} /> : <BookOpen size={24} />}
+          </motion.div>
+          <div className="header-text">
+            <h3 className="institution">{edu.institution}</h3>
+            <p className="degree">{edu.degree}</p>
+          </div>
+        </div>
+
+        <div className="card-body">
+          <div className="info-row">
+            <Calendar size={16} className="info-icon" />
+            <span className="info-text">{edu.period}</span>
+          </div>
+          <div className="score-container">
+            <Award size={16} className="score-icon" />
+            <span className="score-value">{edu.score}</span>
+          </div>
+          <p className="description" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {edu.description}
+          </p>
+        </div>
+
+        <div className="card-footer" style={{ padding: '0.5rem 1.5rem', borderTop: 'none', color: 'var(--army-olive)', fontSize: '0.8rem', fontWeight: '600' }}>
+          Details <ExternalLink size={12} style={{ marginLeft: '4px' }} />
+        </div>
+      </motion.div>
+
+      <ModernModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title={edu.institution} 
+        subtitle={edu.degree}
+        icon={edu.type === 'college' ? '🎓' : '📚'}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'rgba(53, 66, 48, 0.05)', padding: '1.25rem', borderRadius: '12px' }}>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Period</p>
+              <p style={{ fontWeight: '700', color: 'var(--army-olive)' }}>{edu.period}</p>
+            </div>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Score</p>
+              <p style={{ fontWeight: '700', color: 'var(--army-olive)' }}>{edu.score}</p>
+            </div>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Location</p>
+              <p style={{ fontWeight: '700', color: 'var(--army-olive)' }}>{edu.location}</p>
+            </div>
+          </div>
+          <p>{edu.description}</p>
+          {edu.type === 'college' && (
+            <div>
+              <h4 style={{ marginBottom: '0.75rem', color: 'var(--army-olive)' }}>Coursework focus:</h4>
+              <ul style={{ paddingLeft: '1.25rem', color: 'var(--text-muted)' }}>
+                <li>Advanced Algorithms & Data Structures</li>
+                <li>Full Stack Web Application Design</li>
+                <li>Database Management Systems (MongoDB/SQL)</li>
+                <li>System Scalability & Performance Optimization</li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </ModernModal>
+    </>
+  );
+};
+
+const Intro = ({ scrollContainerRef }) => {
+  const { scrollYProgress } = useScroll({
+    container: scrollContainerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const rawImgY = useTransform(scrollYProgress, [0, 1], [0, -180]);
+  const rawContentY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  const imgY = useSpring(rawImgY, { stiffness: 120, damping: 40 });
+  const contentY = useSpring(rawContentY, { stiffness: 120, damping: 40 });
+
+  return (
+    <div className="two-col-layout">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        className="content-side"
+        style={{ y: contentY }}
+      >
+        <motion.h1 variants={textVariants} className="hero-title">Abhijeet Dhokne</motion.h1>
+
+        <motion.h3 variants={textVariants} style={{ fontSize: '1.4rem', color: 'var(--primary)', fontWeight: '600', marginBottom: '1.2rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '0.8rem' }}>
+          Full Stack Web Developer
+        </motion.h3>
+
+        <motion.p variants={textVariants} className="hero-description" style={{ fontSize: '1.15rem', lineHeight: '1.7', color: 'var(--text-main)', marginBottom: '1.2rem', maxWidth: '600px' }}>
+          I am a Computer Science student and a passionate developer focused on building efficient, scalable systems and engaging digital experiences.
+        </motion.p>
+
+        <motion.p variants={textVariants} style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-muted)', maxWidth: '600px' }}>
+          My expertise lies in modern web architectures—particularly <strong>React</strong>, <strong>Node.js</strong>, and <strong>MongoDB</strong>.
+          I love transforming creative ideas into optimized real-world applications while continuously sharpening my problem-solving skills through Data Structures and Algorithms.
+        </motion.p>
+
+        <div variants={textVariants} className="social-links" style={{ marginBottom: '2rem', marginTop: '2rem' }}>
+          <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
+          <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
+          <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
+          <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="social-icon-box google"><Globe size={20} /></a>
+        </div>
+
+        <a
+          variants={textVariants}
+          href="/resume/resume_1.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary"
+          style={{ display: 'inline-block', padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem', textDecoration: 'none' }}
+        >
+          See my resume
+        </a>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
+        whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+        viewport={{ once: false, amount: 0.15 }}
+        transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="image-side"
+        style={{ y: imgY }}
+      >
+        <img src={`${import.meta.env.BASE_URL}images/original-d2eee8c45af2c47792e18fc174bbdd5f.png`} alt="Developer Illustration" className="section-illustration" style={{ mixBlendMode: 'multiply' }} loading="lazy" />
+      </motion.div>
+    </div>
+  );
+};
+
+const WhatIDoItem = ({ item, index, scrollContainerRef }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const itemRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: itemRef,
+    container: scrollContainerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const parallaxOffset = isMobile ? 0 : 80;
+
+  const rawY1 = useTransform(scrollYProgress, [0, 1], [0, index % 2 === 0 ? parallaxOffset : -parallaxOffset]);
+  const rawY2 = useTransform(scrollYProgress, [0, 1], [0, index % 2 === 0 ? -parallaxOffset : parallaxOffset]);
+  
+  const y1 = useSpring(rawY1, { stiffness: 100, damping: 30 });
+  const y2 = useSpring(rawY2, { stiffness: 100, damping: 30 });
+
+  return (
+    <>
+      <div 
+        ref={itemRef}
+        className={`two-col-layout ${item.reverse ? 'reverse' : ''}`} 
+        style={{ minHeight: 'auto', padding: '0', width: '100%', cursor: 'pointer' }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+          className="content-side"
+          style={{ y: isMobile ? 0 : y1 }}
+        >
+          <motion.h2 variants={textVariants} className="section-sub-title" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+            <span style={{ fontSize: '2.5rem' }}>{item.icon}</span> {item.title}
+          </motion.h2>
+          <motion.p variants={textVariants} style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {item.description}
+          </motion.p>
+          <motion.div variants={textVariants} style={{ marginTop: '1rem', color: 'var(--army-olive)', fontWeight: '600', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            Click to read more <ExternalLink size={14} />
+          </motion.div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: item.reverse ? 50 : -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 1 }}
+          style={{ y: isMobile ? 0 : y2 }}
+          className="image-side"
+        >
+          {item.type === "lottie" ? (
+            <div style={{ width: '100%', maxWidth: '650px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DotLottieReact
+                src={item.image}
+                loop
+                autoplay
+                style={{ width: '100%', height: 'auto', maxWidth: '650px' }}
+              />
+            </div>
+          ) : (
+            <img 
+              src={item.image} 
+              alt={item.title} 
+              className="section-illustration" 
+              style={{ maxWidth: '650px', mixBlendMode: 'darken', backgroundColor: 'transparent' }} 
+              loading="lazy" 
+            />
+          )}
+        </motion.div>
       </div>
 
-      <a
-        variants={textVariants}
-        href="/resume/resume_1.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-primary"
-        style={{ display: 'inline-block', padding: '1rem 2.5rem', borderRadius: '8px', fontSize: '1.1rem', textDecoration: 'none' }}
+      <ModernModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title={item.title} 
+        icon={item.icon}
       >
-        See my resume
-      </a>
-    </motion.div>
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: false, amount: 0.1 }}
-      transition={{ duration: 1 }}
-      className="image-side"
-    >
-      <img src={`${import.meta.env.BASE_URL}images/original-d2eee8c45af2c47792e18fc174bbdd5f.png`} alt="Developer Illustration" className="section-illustration" style={{ mixBlendMode: 'multiply' }} />
-    </motion.div>
-  </div>
-);
+        <div style={{ padding: '0.5rem 0' }}>
+          <p style={{ fontSize: '1.1rem', lineHeight: '1.7', color: 'var(--text-main)' }}>{item.description}</p>
+        </div>
+      </ModernModal>
+    </>
+  );
+};
 
-const WhatIDo = () => {
+const WhatIDo = ({ scrollContainerRef }) => {
   const items = [
     {
       title: "Building Full-Stack Web Applications",
@@ -539,85 +932,16 @@ const WhatIDo = () => {
   return (
     <div className="what-i-do-container" style={{ display: 'flex', flexDirection: 'column', gap: '6rem', width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
       {items.map((item, index) => (
-        <div key={index} className={`two-col-layout ${item.reverse ? 'reverse' : ''}`} style={{ minHeight: 'auto', padding: '0', width: '100%' }}>
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
-            className="content-side"
-          >
-            <motion.h2 variants={textVariants} className="section-sub-title" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
-              <span style={{ fontSize: '2.5rem' }}>{item.icon}</span> {item.title}
-            </motion.h2>
-            <motion.p variants={textVariants} style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)' }}>
-              {item.description}
-            </motion.p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: item.reverse ? 50 : -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.1 }}
-            transition={{ duration: 1 }}
-            className="image-side"
-          >
-            {item.type === "lottie" ? (
-              <div style={{ width: '100%', maxWidth: '650px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <DotLottieReact
-                  src={item.image}
-                  loop
-                  autoplay
-                  style={{ width: '100%', height: 'auto', maxWidth: '650px' }}
-                />
-              </div>
-            ) : (
-              <img src={item.image} alt={item.title} className="section-illustration" style={{ maxWidth: '650px' }} />
-            )}
-          </motion.div>
-        </div>
+        <WhatIDoItem 
+          key={index} 
+          item={item} 
+          index={index} 
+          scrollContainerRef={scrollContainerRef} 
+        />
       ))}
     </div>
   );
 };
-
-const ModernDev = () => (
-  <div className="two-col-layout">
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.3 }}
-      className="content-side"
-    >
-      <motion.h2 variants={textVariants} className="section-sub-title">Modern Web Development</motion.h2>
-      <div className="skill-bullets">
-        <motion.div variants={textVariants} className="skill-item">
-          <div className="skill-dot"></div>
-          <div>
-            <strong>Interactive UI/UX:</strong>
-            <p>Creating dynamic, high-performance user interfaces with React and Framer Motion.</p>
-          </div>
-        </motion.div>
-        <motion.div variants={textVariants} className="skill-item">
-          <div className="skill-dot"></div>
-          <div>
-            <strong>State Management:</strong>
-            <p>Efficiently managing application state for complex workflows and data-heavy apps.</p>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-    <motion.div
-      initial={{ opacity: 0, x: 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: false, amount: 0.1 }}
-      transition={{ duration: 1 }}
-      className="image-side"
-    >
-      <img src={`${import.meta.env.BASE_URL}images/web_dev.jpg`} alt="Modern Web Dev Illustration" className="section-illustration" />
-    </motion.div>
-  </div>
-);
 
 const Features = () => (
   <div className="features-grid">
@@ -655,308 +979,309 @@ const Education = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        viewport={{ once: false, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         style={{ width: '100%', maxWidth: '1000px' }}
       >
-      <motion.div
-        whileHover={{ y: -8, scale: 1.02 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-        style={{
-          background: 'rgba(114, 125, 115, 0.05)',
-          borderRadius: '24px',
-          padding: '3rem',
-          border: '1px solid var(--border-soft)',
-          transition: 'all 0.15s ease-out',
-          cursor: 'pointer'
-        }}
-        className="education-card"
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
-          e.currentTarget.style.borderColor = 'var(--primary)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = 'none';
-          e.currentTarget.style.borderColor = 'var(--border-soft)';
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+        <motion.div
+          whileHover={{ y: -8, scale: 1.02 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+          style={{
+            background: 'rgba(114, 125, 115, 0.05)',
+            borderRadius: '24px',
+            padding: '3rem',
+            border: '1px solid var(--border-soft)',
+            transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+            cursor: 'pointer'
+          }}
+          className="education-card"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+            e.currentTarget.style.borderColor = 'var(--primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.borderColor = 'var(--border-soft)';
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              style={{
+                width: '110px',
+                height: '110px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                overflow: 'hidden',
+                borderRadius: '12px'
+              }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
+                alt="Medicaps University"
+                className="medicaps-logo-blend"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+                loading="lazy"
+              />
+            </motion.div>
+            <div style={{ flex: 1 }}>
+              <h3 className="education-title" style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem' }}>
+                B.Tech in Computer Science
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+                Medicaps University, Indore, Madhya Pradesh, India
+              </p>
+              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  2023 - 2027
+                </span>
+                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  CGPA: 7.55
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1.5rem' }}>
+            <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+              Actively collaborated on group projects, building real-world applications that solve practical problems. Gained hands-on experience in team-based development, agile workflows, and delivering production-ready solutions from concept to deployment.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+              Key Coursework
+            </h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+              {coursework.map((subject, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="coursework-tag"
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(114, 125, 115, 0.08)',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    color: 'var(--text-main)',
+                    border: '1px solid var(--border-soft)',
+                    fontWeight: '500'
+                  }}
+                >
+                  {subject}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true, amount: 0.15 }}
+          style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
+        >
           <motion.div
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 15 }}
             style={{
-              width: '110px',
-              height: '110px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              overflow: 'hidden',
-              borderRadius: '12px'
+              background: 'rgba(114, 125, 115, 0.05)',
+              borderRadius: '24px',
+              padding: '3rem',
+              border: '1px solid var(--border-soft)',
+              transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+              e.currentTarget.style.borderColor = 'var(--primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.borderColor = 'var(--border-soft)';
             }}
           >
-            <img
-              src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
-              alt="Medicaps University"
-              className="medicaps-logo-blend"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain'
-              }}
-            />
-          </motion.div>
-          <div style={{ flex: 1 }}>
-            <h3 className="education-title" style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem' }}>
-              B.Tech in Computer Science
-            </h3>
-            <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
-              Medicaps University, Indore, Madhya Pradesh, India
-            </p>
-            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                2023 - 2027
-              </span>
-              <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                CGPA: 7.55
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ marginTop: '1.5rem' }}>
-          <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
-            Actively collaborated on group projects, building real-world applications that solve practical problems. Gained hands-on experience in team-based development, agile workflows, and delivering production-ready solutions from concept to deployment.
-          </p>
-        </div>
-
-        <div style={{ marginTop: '2rem' }}>
-          <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
-            Key Coursework
-          </h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-            {coursework.map((subject, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: false }}
-                className="coursework-tag"
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
                 style={{
-                  padding: '0.5rem 1rem',
-                  background: 'rgba(114, 125, 115, 0.08)',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-soft)',
-                  fontWeight: '500'
+                  width: '110px',
+                  height: '110px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  borderRadius: '12px',
+                  background: 'rgba(114, 125, 115, 0.1)'
                 }}
               >
-                {subject}
-              </motion.span>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.1 }}
-        style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
-      >
-        <motion.div
-          whileHover={{ y: -8, scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-          style={{
-            background: 'rgba(114, 125, 115, 0.05)',
-            borderRadius: '24px',
-            padding: '3rem',
-            border: '1px solid var(--border-soft)',
-            transition: 'all 0.15s ease-out',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
-            e.currentTarget.style.borderColor = 'var(--primary)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-            e.currentTarget.style.borderColor = 'var(--border-soft)';
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              style={{
-                width: '110px',
-                height: '110px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                borderRadius: '12px',
-                background: 'rgba(114, 125, 115, 0.1)'
-              }}
-            >
-              <BookOpen size={48} color="var(--army-olive)" />
-            </motion.div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                High School
-              </h3>
-              <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
-                Govt LBS Hindi H S School, Pandhurna, Chhindwara, Madhya Pradesh, India
-              </p>
-              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  2018 - 2023
-                </span>
-                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Grade: A+
-                </span>
-                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Subject: PCM
-                </span>
+                <BookOpen size={48} color="var(--army-olive)" />
+              </motion.div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  High School
+                </h3>
+                <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+                  Govt LBS Hindi H S School, Pandhurna, Chhindwara, Madhya Pradesh, India
+                </p>
+                <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                    2018 - 2023
+                  </span>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                    Grade: A+
+                  </span>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                    Subject: PCM
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div style={{ marginTop: '1.5rem' }}>
-            <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
-              Active member of the school music group, delivering stage performances at the district level. Part of a talented ensemble equipped with a wide range of classical instruments. Primarily served as the lead vocalist, bringing energy and passion to every live performance.
-            </p>
-          </div>
-
-          <div style={{ marginTop: '2rem' }}>
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
-              Key Subjects
-            </h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              {['Physics', 'Chemistry', 'Maths', 'Hindi', 'English', 'Yoga'].map((subject, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: false }}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    background: 'rgba(114, 125, 115, 0.08)',
-                    borderRadius: '20px',
-                    fontSize: '0.9rem',
-                    color: 'var(--text-main)',
-                    border: '1px solid var(--border-soft)',
-                    fontWeight: '500'
-                  }}
-                >
-                  {subject}
-                </motion.span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        viewport={{ once: false, amount: 0.1 }}
-        style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
-      >
-        <motion.div
-          whileHover={{ y: -8, scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-          style={{
-            background: 'rgba(114, 125, 115, 0.05)',
-            borderRadius: '24px',
-            padding: '3rem',
-            border: '1px solid var(--border-soft)',
-            transition: 'all 0.15s ease-out',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
-            e.currentTarget.style.borderColor = 'var(--primary)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-            e.currentTarget.style.borderColor = 'var(--border-soft)';
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              style={{
-                width: '110px',
-                height: '110px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                borderRadius: '12px',
-                background: 'rgba(114, 125, 115, 0.1)'
-              }}
-            >
-              <Smile size={48} color="var(--army-olive)" />
-            </motion.div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                Primary & Middle School
-              </h3>
-              <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
-                New Sunflower English Medium School, Pandhurna, Madhya Pradesh, India
+            <div style={{ marginTop: '1.5rem' }}>
+              <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+                Active member of the school music group, delivering stage performances at the district level. Part of a talented ensemble equipped with a wide range of classical instruments. Primarily served as the lead vocalist, bringing energy and passion to every live performance.
               </p>
-              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  2009 - 2017
-                </span>
-                <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Grade: O
-                </span>
+            </div>
+
+            <div style={{ marginTop: '2rem' }}>
+              <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+                Key Subjects
+              </h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                {['Physics', 'Chemistry', 'Maths', 'Hindi', 'English', 'Yoga'].map((subject, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: 'rgba(114, 125, 115, 0.08)',
+                      borderRadius: '20px',
+                      fontSize: '0.9rem',
+                      color: 'var(--text-main)',
+                      border: '1px solid var(--border-soft)',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {subject}
+                  </motion.span>
+                ))}
               </div>
             </div>
-          </div>
+          </motion.div>
+        </motion.div>
 
-          <div style={{ marginTop: '1.5rem' }}>
-            <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
-              The most cherished chapter of my life — a time filled with curiosity, joy, and endless energy. Actively participated in sports competitions, dramas, and dance performances, discovering a deep love for the stage and teamwork. These formative years built the foundation for confidence, creativity, and a lifelong passion for performing arts.
-            </p>
-          </div>
-
-          <div style={{ marginTop: '2rem' }}>
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
-              Key Learnings
-            </h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              {['Reading & Writing', 'Basic Mathematics', 'Environmental Science', 'Sports & Athletics', 'Drama & Theatre', 'Dance & Performing Arts', 'Team Collaboration'].map((subject, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: false }}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    background: 'rgba(114, 125, 115, 0.08)',
-                    borderRadius: '20px',
-                    fontSize: '0.9rem',
-                    color: 'var(--text-main)',
-                    border: '1px solid var(--border-soft)',
-                    fontWeight: '500'
-                  }}
-                >
-                  {subject}
-                </motion.span>
-              ))}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true, amount: 0.15 }}
+          style={{ width: '100%', maxWidth: '1000px', marginTop: '2rem' }}
+        >
+          <motion.div
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+            style={{
+              background: 'rgba(114, 125, 115, 0.05)',
+              borderRadius: '24px',
+              padding: '3rem',
+              border: '1px solid var(--border-soft)',
+              transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
+              e.currentTarget.style.borderColor = 'var(--primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.borderColor = 'var(--border-soft)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '2rem' }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                style={{
+                  width: '110px',
+                  height: '110px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  borderRadius: '12px',
+                  background: 'rgba(114, 125, 115, 0.1)'
+                }}
+              >
+                <Smile size={48} color="var(--army-olive)" />
+              </motion.div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1.5rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  Primary & Middle School
+                </h3>
+                <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.3rem' }}>
+                  New Sunflower English Medium School, Pandhurna, Madhya Pradesh, India
+                </p>
+                <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                    2009 - 2017
+                  </span>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                    Grade: O
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
+
+            <div style={{ marginTop: '1.5rem' }}>
+              <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+                The most cherished chapter of my life — a time filled with curiosity, joy, and endless energy. Actively participated in sports competitions, dramas, and dance performances, discovering a deep love for the stage and teamwork. These formative years built the foundation for confidence, creativity, and a lifelong passion for performing arts.
+              </p>
+            </div>
+
+            <div style={{ marginTop: '2rem' }}>
+              <h4 style={{ fontSize: '1.1rem', color: 'var(--army-olive)', fontWeight: '600', marginBottom: '1rem' }}>
+                Key Learnings
+              </h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                {['Reading & Writing', 'Basic Mathematics', 'Environmental Science', 'Sports & Athletics', 'Drama & Theatre', 'Dance & Performing Arts', 'Team Collaboration'].map((subject, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: 'rgba(114, 125, 115, 0.08)',
+                      borderRadius: '20px',
+                      fontSize: '0.9rem',
+                      color: 'var(--text-main)',
+                      border: '1px solid var(--border-soft)',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {subject}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
-    </motion.div>
-  </div>
-);
+    </div>
+  );
 };
 
 const Experience = () => {
@@ -968,134 +1293,121 @@ const Experience = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        viewport={{ once: false, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}
       >
-      <motion.div
-        whileHover={{ y: -8, scale: 1.02 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-        style={{
-          background: 'rgba(114, 125, 115, 0.05)',
-          borderRadius: '24px',
-          padding: '2.5rem',
-          border: '1px solid var(--border-soft)',
-          transition: 'all 0.15s ease-out',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 20px 40px rgba(53, 66, 48, 0.15)';
-          e.currentTarget.style.borderColor = 'var(--primary)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = 'none';
-          e.currentTarget.style.borderColor = 'var(--border-soft)';
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            style={{
-              width: '80px',
-              height: '80px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              overflow: 'hidden',
-              borderRadius: '12px'
-            }}
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
-              alt="Medicaps University"
-              className="medicaps-logo-blend"
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            />
-          </motion.div>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Briefcase size={24} /> MERN Stack Developer
-            </h3>
-            <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
-              Medicaps University
-            </p>
-            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2-Member Team</span>
-            </div>
-          </div>
-        </div>
-
-        <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-          Built a hostel complaint management system to digitize workflows and boost transparency by 40%.
-        </p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
-          {[
-            'Built REST APIs with Node.js & Express.js for complaint tracking',
-            'Integrated SMTP-based automated escalation for unresolved issues',
-            'Designed responsive React UI for students & hostel admin',
-            'Achieved 40% increase in hostel management transparency'
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.08 }}
-              viewport={{ once: false }}
-              style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
-            >
-              <div style={{ width: '6px', height: '6px', background: 'var(--army-olive)', borderRadius: '50%', marginTop: '7px', flexShrink: 0 }}></div>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{item}</span>
-            </motion.div>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-          {techStack.map((tech, index) => (
-            <motion.span
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: false }}
+        <motion.div
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+          style={{
+            background: 'rgba(114, 125, 115, 0.05)',
+            borderRadius: '24px',
+            padding: '2.5rem',
+            border: '1px solid var(--border-soft)',
+            transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+            cursor: 'default'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div
               style={{
-                padding: '0.35rem 0.85rem',
-                background: 'rgba(114, 125, 115, 0.08)',
-                borderRadius: '20px',
-                fontSize: '0.8rem',
-                color: 'var(--text-main)',
-                border: '1px solid var(--border-soft)',
-                fontWeight: '500'
+                width: '80px',
+                height: '80px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                overflow: 'hidden',
+                borderRadius: '12px'
               }}
             >
-              {tech}
-            </motion.span>
-          ))}
-        </div>
+              <img
+                src={`${import.meta.env.BASE_URL}images/medicaps-logo-fin-Picsart-BackgroundRemover.png`}
+                alt="Medicaps University"
+                className="medicaps-logo-blend"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                loading="lazy"
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.3rem', color: 'var(--army-olive)', fontWeight: '700', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                MERN Stack Developer
+              </h3>
+              <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '500', marginBottom: '0.2rem' }}>
+                Medicaps University
+              </p>
+              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Feb 2026 - May 2026</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2-Member Team</span>
+              </div>
+            </div>
+          </div>
+
+          <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+            Built a hostel complaint management system to digitize workflows and boost transparency by 40%.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+            {[
+              'Built REST APIs with Node.js & Express.js for complaint tracking',
+              'Integrated SMTP-based automated escalation for unresolved issues',
+              'Designed responsive React UI for students & hostel admin',
+              'Achieved 40% increase in hostel management transparency'
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.08 }}
+                viewport={{ once: true }}
+                style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
+              >
+                <div style={{ width: '6px', height: '6px', background: 'var(--army-olive)', borderRadius: '50%', marginTop: '7px', flexShrink: 0 }}></div>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{item}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {techStack.map((tech, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                style={{
+                  padding: '0.35rem 0.85rem',
+                  background: 'rgba(114, 125, 115, 0.08)',
+                  borderRadius: '20px',
+                  fontSize: '0.8rem',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--border-soft)',
+                  fontWeight: '500'
+                }}
+              >
+                {tech}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
-  </div>
-);
+    </div>
+  );
 };
 
-const PlaceholderContent = ({ title }) => (
-  <div style={{ padding: '4rem', textAlign: 'center', width: '100%', background: 'rgba(0,0,0,0.02)', borderRadius: '20px' }}>
-    <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>Our {title} section is getting a creative makeover.</p>
-  </div>
-);
-
-const MainLanding = ({ homeKey }) => {
+const MainLanding = ({ homeKey, scrollContainerRef }) => {
   return (
     <div className="home-view">
-      <Section id="home" key={`home-${homeKey}`}><Quote /></Section>
-      <Section id="intro"><Intro /></Section>
+      <Section id="home" key={`home-${homeKey}`} once={false}><Quote homeKey={homeKey} scrollContainerRef={scrollContainerRef} /></Section>
+      <Section id="intro" once={false}><Intro scrollContainerRef={scrollContainerRef} /></Section>
       <Section id="what-i-do" title="What I Do" subtitle="My Expertise" description="Turning complex problems into elegant, scalable solutions — one component at a time.">
-        <WhatIDo />
+        <WhatIDo scrollContainerRef={scrollContainerRef} />
       </Section>
-      <Section id="features"><Features /></Section>
+      <Section id="feature-grid" title="Key Highlights" subtitle="Core Focus" description="A deep dive into the technologies and principles that drive my development process.">
+        <Features />
+      </Section>
       <Section id="education" title="Education" subtitle="Academic Journey" description="Building a strong foundation in computer science while exploring the endless possibilities of technology.">
-        <Education />
+        <Education scrollContainerRef={scrollContainerRef} />
       </Section>
       <Section id="experience" title="Experience" subtitle="Professional Growth" description="Real-world experience building production-grade applications that solve actual problems.">
         <Experience />
@@ -1123,8 +1435,9 @@ const Header = ({ homeKey, setHomeKey }) => {
 
   useEffect(() => {
     const sections = document.querySelectorAll('section');
+    const mainContent = document.querySelector('.main-content');
     const observerOptions = {
-      root: null,
+      root: mainContent,
       rootMargin: '-40% 0px -40% 0px',
       threshold: 0
     };
@@ -1164,9 +1477,10 @@ const Header = ({ homeKey, setHomeKey }) => {
     setMobileMenuOpen(false);
     isScrollingByNav.current = true;
     const element = document.getElementById(item.targetId);
-    if (element) {
-      const top = item.targetId === 'home' ? 0 : element.offsetTop - 80;
-      window.scrollTo({
+    const mainContent = document.querySelector('.main-content');
+    if (element && mainContent) {
+      const top = item.targetId === 'home' ? 0 : element.getBoundingClientRect().top + mainContent.scrollTop - 80;
+      mainContent.scrollTo({
         top,
         behavior: 'smooth'
       });
@@ -1185,7 +1499,10 @@ const Header = ({ homeKey, setHomeKey }) => {
         <div className="header-title" onClick={(e) => {
           e.preventDefault();
           isScrollingByNav.current = true;
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          const mainContent = document.querySelector('.main-content');
+          if (mainContent) {
+            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+          }
           window.history.pushState(null, '', '/#/');
           setActivePath('/');
           setHomeKey(prev => prev + 1);
@@ -1281,13 +1598,15 @@ const Footer = () => (
 
 function App() {
   const [homeKey, setHomeKey] = useState(0);
+  const scrollContainerRef = useRef(null);
+
   return (
     <Router>
       <div className="app-container">
         <Header homeKey={homeKey} setHomeKey={setHomeKey} />
-        <main className="main-content">
+        <main className="main-content" ref={scrollContainerRef}>
           <Routes>
-            <Route path="*" element={<MainLanding homeKey={homeKey} />} />
+            <Route path="*" element={<MainLanding homeKey={homeKey} scrollContainerRef={scrollContainerRef} />} />
           </Routes>
           <Footer />
         </main>
