@@ -1,4 +1,5 @@
 import React, { useState, useMemo, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Award, FileText, Code, X, Trophy } from 'lucide-react';
 
@@ -295,7 +296,7 @@ const CertificateModal = ({ cert, onClose }) => {
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -313,7 +314,7 @@ const CertificateModal = ({ cert, onClose }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem'
+        padding: '1.5rem'
       }}
     >
       <motion.div
@@ -468,7 +469,8 @@ const CertificateModal = ({ cert, onClose }) => {
           </a>
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 };
 

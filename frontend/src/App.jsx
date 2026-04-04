@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import {
@@ -52,99 +53,100 @@ const ModernModal = ({ isOpen, onClose, title, subtitle, children, icon }) => {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  return (
+  if (!isOpen) return null;
+
+  return createPortal(
     <AnimatePresence>
-      {isOpen && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(10px)',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.5rem'
+        }}
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          onClick={(e) => e.stopPropagation()}
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            backdropFilter: 'blur(10px)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2rem'
+            background: '#F0F0D7',
+            borderRadius: '24px',
+            border: '1px solid var(--border-soft)',
+            padding: '2.5rem',
+            maxWidth: '700px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            position: 'relative',
+            boxShadow: '0 40px 100px rgba(0, 0, 0, 0.4)'
           }}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            onClick={(e) => e.stopPropagation()}
+          <button
+            onClick={onClose}
             style={{
-              background: '#F0F0D7',
-              borderRadius: '24px',
-              border: '1px solid var(--border-soft)',
-              padding: '2.5rem',
-              maxWidth: '700px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              position: 'relative',
-              boxShadow: '0 40px 100px rgba(0, 0, 0, 0.4)'
+              position: 'absolute',
+              top: '1.5rem',
+              right: '1.5rem',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              border: 'none',
+              background: 'rgba(53, 66, 48, 0.1)',
+              color: 'var(--army-olive)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease'
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--army-olive)'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(53, 66, 48, 0.1)'; e.currentTarget.style.color = 'var(--army-olive)'; }}
           >
-            <button
-              onClick={onClose}
-              style={{
-                position: 'absolute',
-                top: '1.5rem',
-                right: '1.5rem',
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                border: 'none',
+            <X size={20} />
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem' }}>
+            {icon && (
+              <div style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '14px',
                 background: 'rgba(53, 66, 48, 0.1)',
-                color: 'var(--army-olive)',
-                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--army-olive)'; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(53, 66, 48, 0.1)'; e.currentTarget.style.color = 'var(--army-olive)'; }}
-            >
-              <X size={20} />
-            </button>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem' }}>
-              {icon && (
-                <div style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '14px',
-                  background: 'rgba(53, 66, 48, 0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2rem'
-                }}>
-                  {icon}
-                </div>
-              )}
-              <div>
-                <h2 style={{ fontSize: '1.8rem', color: 'var(--army-olive)', fontWeight: '800', margin: 0 }}>{title}</h2>
-                {subtitle && <p style={{ fontSize: '1rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', fontWeight: '500' }}>{subtitle}</p>}
+                fontSize: '2rem'
+              }}>
+                {icon}
               </div>
+            )}
+            <div>
+              <h2 style={{ fontSize: '1.8rem', color: 'var(--army-olive)', fontWeight: '800', margin: 0 }}>{title}</h2>
+              {subtitle && <p style={{ fontSize: '1rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0', fontWeight: '500' }}>{subtitle}</p>}
             </div>
+          </div>
 
-            <div className="modal-content-rich" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-main)' }}>
-              {children}
-            </div>
-          </motion.div>
+          <div className="modal-content-rich" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-main)' }}>
+            {children}
+          </div>
         </motion.div>
-      )}
-    </AnimatePresence>
+      </motion.div>
+    </AnimatePresence>,
+    document.body
   );
 };
 
