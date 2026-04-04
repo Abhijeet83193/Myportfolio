@@ -783,7 +783,7 @@ const Intro = ({ scrollContainerRef }) => {
 
         <a
           variants={textVariants}
-          href="/resume/resume_1.pdf"
+          href={`${import.meta.env.BASE_URL}resume/resume_1.pdf`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary"
