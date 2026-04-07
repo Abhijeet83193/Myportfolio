@@ -38,7 +38,7 @@ const socialLinks = [
   },
   {
     name: 'Google',
-    url: 'https://www.google.com/search?q=Abhijeet+Dhokne',
+    url: 'https://www.google.com',
     icon: <Globe size={20} />,
     color: '#4285F4',
     hoverColor: '#3367D6'
@@ -153,11 +153,55 @@ const Contact = memo(() => {
                   justifyContent: 'center',
                   color: '#EA4335'
                 }}>
-                <img src={`${import.meta.env.BASE_URL}images/google_mail_gmail_logo_icon_159346.png`} alt="Gmail" style={{ width: '18px', height: '18px' }} loading="lazy" />
+                  <img src={`${import.meta.env.BASE_URL}images/google_mail_gmail_logo_icon_159346.png`} alt="Gmail" style={{ width: '18px', height: '18px' }} loading="lazy" />
                 </div>
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Email</p>
                   <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '600' }}>abhijeetdhokne1474@gmail.com</p>
+                </div>
+              </a>
+
+              <a
+                href="https://www.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  padding: '1rem',
+                  background: 'rgba(114, 125, 115, 0.05)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-soft)',
+                  textDecoration: 'none',
+                  transition: 'border-color 0.2s ease, background-color 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#4285F4';
+                  e.currentTarget.style.background = 'rgba(66, 133, 244, 0.05)';
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(66, 133, 244, 0.12)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-soft)';
+                  e.currentTarget.style.background = 'rgba(114, 125, 115, 0.05)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: 'rgba(66, 133, 244, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#4285F4'
+                }}>
+                  <Globe size={18} />
+                </div>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Website</p>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '600' }}>google.com</p>
                 </div>
               </a>
 

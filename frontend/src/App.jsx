@@ -777,9 +777,9 @@ const Intro = ({ scrollContainerRef }) => {
         </motion.p>
 
         <div variants={textVariants} className="social-links" style={{ marginBottom: '2rem', marginTop: '2rem' }}>
-          <a href="https://github.com/Abhijeet83193" className="social-icon-box github"><Github size={20} /></a>
-          <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" className="social-icon-box linkedin"><Linkedin size={20} /></a>
-          <a href="https://x.com/Abhijeet_Dhokne" className="social-icon-box x-icon"><XIcon size={20} /></a>
+          <a href="https://github.com/Abhijeet83193" target="_blank" rel="noopener noreferrer" className="social-icon-box github"><Github size={20} /></a>
+          <a href="https://www.linkedin.com/in/abhijeet-dhokne-8644a32b3/" target="_blank" rel="noopener noreferrer" className="social-icon-box linkedin"><Linkedin size={20} /></a>
+          <a href="https://x.com/Abhijeet_Dhokne" target="_blank" rel="noopener noreferrer" className="social-icon-box x-icon"><XIcon size={20} /></a>
           <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="social-icon-box google"><Globe size={20} /></a>
         </div>
 
