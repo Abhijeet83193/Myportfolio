@@ -54,18 +54,18 @@ const projects = [
       year: 2025,
       order: 4
     },
-    {
-      title: 'HostelResolve',
-      description: 'A hostel complaint management system that increases transparency between wardens and students. If complaints remain unresolved, the system automatically escalates them to higher authorities via email.',
-      image: `${import.meta.env.BASE_URL}images/hostelresolve.jpg`,
-      liveUrl: 'https://hostelresolve.onrender.com/',
-      githubUrl: 'https://github.com/Abhijeet83193/HostelResolve',
-      techStack: ['React', 'Node.js', 'Express.js', 'MongoDB', 'SMTP', 'Cloudinary', 'JavaScript', 'HTML', 'CSS', 'Framer Motion'],
-      role: 'MERN Stack Developer',
-      date: '2026',
-      year: 2026,
-      order: 5
-    },
+{
+       title: 'HostelResolve',
+       description: 'A hostel complaint management system that increases transparency between wardens and students. If complaints remain unresolved, the system automatically escalates them to higher authorities via email.',
+       image: `${import.meta.env.BASE_URL}images/hostelresolve.jpg`,
+       liveUrl: 'https://hostelresolve-frontend.onrender.com/',
+       githubUrl: 'https://github.com/Abhijeet83193/HostelResolve',
+       techStack: ['React', 'Node.js', 'Express.js', 'MongoDB', 'SMTP', 'Cloudinary', 'JavaScript', 'HTML', 'CSS', 'Framer Motion'],
+       role: 'MERN Stack Developer',
+       date: '2026',
+       year: 2026,
+       order: 5
+     },
     {
       title: 'My Portfolio',
       description: 'A personal portfolio website showcasing my skills, projects, education, and experience as a Full Stack Developer. Built with React, Framer Motion, and Lottie animations for a modern, interactive experience with smooth scrolling, animated sections, and dynamic project filtering.',
